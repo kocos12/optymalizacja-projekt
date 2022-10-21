@@ -9,7 +9,7 @@ double* expansion(matrix(*ff)(matrix, matrix, matrix), double x0, double d, doub
 		double* p = new double[2]{ 0,0 };
 		//Tu wpisz kod funkcji
 		int i = 0;
-		double x1, x, x11;
+		double x1;
 		x1 = x0 + d;
 		
 		if (ff(x1,ud1,ud2) == ff(x0,ud1,ud2)) {
@@ -26,22 +26,30 @@ double* expansion(matrix(*ff)(matrix, matrix, matrix), double x0, double d, doub
 				return (p);
 			}
 		}
+
+		double xi, xiplus1, ximinus1;
 		do {
 			if (solution::f_calls > Nmax){
 				throw ("Error xd");
 			}
-			x = x0 + pow(alpha, i) * d;
+			if (i > 1) {
+				ximinus1 = x0 + pow(alpha, i - 2) * d;
+			}
+			
+			xi = x0 + pow(alpha, i-1) * d;
+			
+			xiplus1 = x0 + pow(alpha, i) * d;
 			i++;
-			x11 = x0 + pow(alpha, i) * d;
-		} while (ff(x1, ud1, ud2) <= ff(x0, ud1, ud2));
+			//cout << i << endl;
+		} while (ff(xi, ud1, ud2) >= ff(xiplus1, ud1, ud2));
 
 		if (d > 0) {
-			p[0] = x;
-			p[1] = x11;
+			p[0] = ximinus1;
+			p[1] = xiplus1;
 			return p;
 		}
-		p[0] = x11;
-		p[1] = x;
+		p[0] = xiplus1;
+		p[1] = ximinus1;
 		return p;
 	}
 	catch (string ex_info)
@@ -57,6 +65,7 @@ solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 		solution Xopt;
 		//Tu wpisz kod funkcji
 		int k = 0;
+
 		do {
 			k++;
 		} while (true);

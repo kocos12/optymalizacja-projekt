@@ -35,7 +35,7 @@ int main()
 void lab1()
 {
 	double* p = expansion(f1,-100,1,2,1000);
-	cout << p[0] << endl;
+	cout << p[0] <<" "<< p[1] << endl;
 }
 
 void lab2()
