@@ -2,7 +2,7 @@
 #include <cmath>
 
 matrix f1(matrix x, matrix ud1, matrix ud2) {
-	double e = 2.718281828459;
-	double pi = 3.141592;
-	return -cos(0.1 * m2d(x)) * pow(e, -(0.1 * m2d(x) - 2 * pi * 0.1 * m2d(x) - 2 * pi)) + 0.002 * (0.1 * m2d(x)) * (0.1 * m2d(x));
+	matrix y;
+	y = -cos(0.1 * x()) * exp(-pow(0.1 * x() - 2 * 3.14, 2)) + 0.002 * pow(0.1 * x(), 2);
+	return y;
 }

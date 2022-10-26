@@ -34,8 +34,12 @@ int main()
 
 void lab1()
 {
-	double* p = expansion(f1,-100,1,2,1000);
-	cout << p[0] <<" "<< p[1] << endl;
+	double* p = expansion(f1,10,1,1.5,1000);
+	//cout << p[0] <<" "<< p[1] << endl;
+	solution opt = fib(f1, -10, 10, 1e-5);
+	//cout << opt.x << " " << opt.y <<solution::f_calls;
+	solution optLag = lag(f1, -100, 100, 0.001, 1e-7, 1000);
+	cout << optLag.x << " " << optLag.y;
 }
 
 void lab2()

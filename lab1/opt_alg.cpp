@@ -30,7 +30,7 @@ double* expansion(matrix(*ff)(matrix, matrix, matrix), double x0, double d, doub
 		double xi, xiplus1, ximinus1;
 		do {
 			if (solution::f_calls > Nmax){
-				throw ("Error xd");
+				throw ("Error");
 			}
 			if (i > 1) {
 				ximinus1 = x0 + pow(alpha, i - 2) * d;
@@ -62,29 +62,142 @@ solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 {
 	try
 	{
-		solution Xopt;
-		//Tu wpisz kod funkcji
-		int k = 0;
+		int n = static_cast<int>(ceil(log2(sqrt(5) * (b - a) / epsilon) / log2((1 + sqrt(5)) / 2)));
 
-		do {
-			k++;
-		} while (true);
-		return Xopt;
+		double* A = new double[n];
+		double* B = new double[n];
+		double* C = new double[n];
+		double* D = new double[n];
+
+		double* F = new double[n];
+		F[0] = 1;
+		F[1] = 1;
+		for (int i = 2; i < n ; ++i) {
+			F[i] = F[i - 2] + F[i - 1];
+		}
+		n--;
+		cout << "L/epsilon = \t" << (b-a) / epsilon << endl;
+		cout << "F[n] = \t" << F[n] << endl;
+		
+		A[0] = a;
+		B[0] = b;
+		C[0] = B[0] - (F[n - 1] / F[n]) * (B[0] - A[0]);
+		D[0] = A[0] + B[0] - C[0];
+
+		int i;
+		for (i = 0; i <= n - 4; ++i)
+		{
+			//tutaj algorytm
+			if (ff(C[i], ud1, ud2) < ff(D[i], ud1, ud2)) {
+				A[i + 1] = A[i];
+				B[i + 1] = D[i];
+			}
+			else {
+				B[i + 1] = B[i];
+				A[i + 1] = C[i];
+			}
+			C[i + 1] = B[i + 1] - ((F[n - i - 2] / F[n - i - 1]) * (B[i + 1] - A[i + 1]));
+			D[i + 1] = A[i + 1] + B[i + 1] - C[i + 1];
+		}
+
+		solution opt;
+		//cout << i << endl;
+		opt.x = C[n - 3];
+		opt.y = ff(C[n - 3], ud1, ud2);
+		//cout << C[n - 3] << " " << ff(C[n - 3], ud1, ud2) << endl;
+		return opt; 
 	}
 	catch (string ex_info)
 	{
 		throw ("solution fib(...):\n" + ex_info);
 	}
-
 }
 
 solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double epsilon, double gamma, int Nmax, matrix ud1, matrix ud2)
 {
 	try
 	{
+		int n = Nmax;
 		solution Xopt;
-		//Tu wpisz kod funkcji
 
+		double* A = new double[n];
+		double* B = new double[n];
+		double* C = new double[n];
+		double* D = new double[n];
+		double* D_old = new double[n];
+
+		
+		A[0] = a;
+		B[0] = b;
+		C[0] = (b + a) / 2;
+		D_old[0] = a;
+		int i = 0;
+
+		double licznik, mianownik;
+		do
+		{
+			licznik = m2d(ff(A[i], ud1, ud2)) * (pow(C[i], 2) - pow(B[i], 2)) + m2d(ff(C[i], ud1, ud2)) * (pow(B[i], 2) - pow(A[i], 2)) + m2d(ff(B[i], ud1, ud2)) * (pow(A[i], 2) - pow(C[i], 2));
+			mianownik = m2d(ff(A[i], ud1, ud2)) * (C[i] - B[i]) + m2d(ff(C[i], ud1, ud2)) * (B[i] - A[i]) + m2d(ff(B[i], ud1, ud2)) * (A[i] - C[i]);
+			cout << "licznik " << i << " = " << licznik << endl;
+			cout << "mianownik " << i << " = " << mianownik << endl << endl;
+
+			if (mianownik <= 0) {
+				Xopt.x = D_old[i];
+				Xopt.y = (ff(D_old[i], ud1, ud2));
+				Xopt.flag = 2;
+				return Xopt;
+			}
+
+			D[i] = 0.5 * licznik / mianownik;
+
+			if ((A[i] < D[i]) && (D[i] < C[i]))
+			{
+				if (m2d(ff(D[i], ud1, ud2)) < m2d(ff(C[i], ud1, ud2)))
+				{
+					A[i + 1] = A[i];
+					C[i + 1] = D[i];
+					B[i + 1] = C[i];
+				}
+				else {
+					A[i + 1] = D[i];
+					C[i + 1] = C[i];
+					B[i + 1] = B[i];
+				}
+			}
+			else if ((C[i] < D[i]) && (D[i] < B[i]))
+			{
+				if (m2d(ff(D[i], ud1, ud2)) < m2d(ff(C[i], ud1, ud2)))
+				{
+					A[i + 1] = C[i];
+					C[i + 1] = D[i];
+					B[i + 1] = B[i];
+				}
+				else
+				{
+					A[i + 1] = A[i];
+					C[i + 1] = C[i];
+					B[i + 1] = D[i];
+				}
+			}
+			else
+			{
+				Xopt.x = D_old[i];
+				Xopt.y = (ff(D_old[i], ud1, ud2));
+				Xopt.flag = 2;
+				return Xopt;
+			}
+
+			i++;
+			if (solution::f_calls > Nmax)
+			{
+				throw ("Error");
+				break;
+			}
+
+		} while (B[i] - A[i] < epsilon || fabs(D[i] - D[i - 1] <= gamma));
+
+		Xopt.x = D[i];
+		Xopt.y = ff(D[i], ud1, ud2);
 		return Xopt;
 	}
 	catch (string ex_info)
