@@ -113,91 +113,82 @@ solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 	}
 }
 
+
 solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double epsilon, double gamma, int Nmax, matrix ud1, matrix ud2)
 {
 	try
 	{
-		int n = Nmax;
 		solution Xopt;
-
-		double* A = new double[n];
-		double* B = new double[n];
-		double* C = new double[n];
-		double* D = new double[n];
-		double* D_old = new double[n];
-
-		
-		A[0] = a;
-		B[0] = b;
-		C[0] = (b + a) / 2;
-		D_old[0] = a;
-		int i = 0;
-
-		double licznik, mianownik;
-		do
+		Xopt.ud = b - a;
+		solution A(a), B(b), C, D, D_old(a);
+		C.x = (a + b) / 2;
+		A.fit_fun(ff, ud1, ud2);
+		B.fit_fun(ff, ud1, ud2);
+		C.fit_fun(ff, ud1, ud2);
+		double l, m;
+		while (true)
 		{
-			licznik = m2d(ff(A[i], ud1, ud2)) * (pow(C[i], 2) - pow(B[i], 2)) + m2d(ff(C[i], ud1, ud2)) * (pow(B[i], 2) - pow(A[i], 2)) + m2d(ff(B[i], ud1, ud2)) * (pow(A[i], 2) - pow(C[i], 2));
-			mianownik = m2d(ff(A[i], ud1, ud2)) * (C[i] - B[i]) + m2d(ff(C[i], ud1, ud2)) * (B[i] - A[i]) + m2d(ff(B[i], ud1, ud2)) * (A[i] - C[i]);
-			cout << "licznik " << i << " = " << licznik << endl;
-			cout << "mianownik " << i << " = " << mianownik << endl << endl;
-
-			if (mianownik <= 0) {
-				Xopt.x = D_old[i];
-				Xopt.y = (ff(D_old[i], ud1, ud2));
+			l = m2d(A.y * (pow(B.x) - pow(C.x)) + B.y * (pow(C.x) - pow(A.x)) + C.y * (pow(A.x) - pow(B.x)));
+			m = m2d(A.y * (B.x - C.x) + B.y * (C.x - A.x) + C.y * (A.x - B.x));
+			if (m <= 0)
+			{
+				Xopt = D_old;
 				Xopt.flag = 2;
 				return Xopt;
 			}
-
-			D[i] = 0.5 * licznik / mianownik;
-
-			if ((A[i] < D[i]) && (D[i] < C[i]))
+			D.x = 0.5 * l / m;
+			D.fit_fun(ff, ud1, ud2);
+			if (A.x <= D.x && D.x <= C.x)
 			{
-				if (m2d(ff(D[i], ud1, ud2)) < m2d(ff(C[i], ud1, ud2)))
+				if (D.y < C.y)
 				{
-					A[i + 1] = A[i];
-					C[i + 1] = D[i];
-					B[i + 1] = C[i];
-				}
-				else {
-					A[i + 1] = D[i];
-					C[i + 1] = C[i];
-					B[i + 1] = B[i];
-				}
-			}
-			else if ((C[i] < D[i]) && (D[i] < B[i]))
-			{
-				if (m2d(ff(D[i], ud1, ud2)) < m2d(ff(C[i], ud1, ud2)))
-				{
-					A[i + 1] = C[i];
-					C[i + 1] = D[i];
-					B[i + 1] = B[i];
+					A.x = A.x;
+					B.x = C.x;
+					C.x = D.x;
 				}
 				else
 				{
-					A[i + 1] = A[i];
-					C[i + 1] = C[i];
-					B[i + 1] = D[i];
+					A.x = D.x;
+					C.x = C.x;
+					B.x = B.x;
+				}
+			}
+			else if (C.x <= D.x && D.x <= B.x)
+			{
+				if (D.y < C.y)
+				{
+					A.x = C.x;
+					C.x = D.x;
+					B.x = B.x;
+				}
+				else 
+				{
+					A.x = A.x;
+					C.x = C.x;
+					B.x = D.x;
 				}
 			}
 			else
 			{
-				Xopt.x = D_old[i];
-				Xopt.y = (ff(D_old[i], ud1, ud2));
+				Xopt = D_old;
 				Xopt.flag = 2;
 				return Xopt;
 			}
-
-			i++;
-			if (solution::f_calls > Nmax)
+			Xopt.ud.add_row((B.x - A.x)());
+			if (B.x - A.x < epsilon || abs(D.x() - D_old.x()) < gamma)
 			{
-				throw ("Error");
+				Xopt = D;
+				Xopt.flag = 0;
 				break;
 			}
-
-		} while (B[i] - A[i] < epsilon || fabs(D[i] - D[i - 1] <= gamma));
-
-		Xopt.x = D[i];
-		Xopt.y = ff(D[i], ud1, ud2);
+			if (solution::f_calls > Nmax)
+			{
+				Xopt = D;
+				Xopt.flag = 1;
+				break;
+			}
+			D_old = D;
+		}
 		return Xopt;
 	}
 	catch (string ex_info)
