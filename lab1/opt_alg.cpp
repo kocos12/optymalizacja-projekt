@@ -70,8 +70,8 @@ solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 		double* D = new double[n];
 
 		double* F = new double[n];
-		F[0] = 1;
-		F[1] = 1;
+		F[0] = 1.;
+		F[1] = 1.;
 		for (int i = 2; i < n ; ++i) {
 			F[i] = F[i - 2] + F[i - 1];
 		}
