@@ -27,7 +27,7 @@ double* expansion(matrix(*ff)(matrix, matrix, matrix), double x0, double d, doub
 			}
 		}
 
-		double xi, xiplus1, ximinus1;
+		double xi, xiplus1 = 0, ximinus1 = 0;
 		do {
 			if (solution::f_calls > Nmax){
 				throw ("Error");
