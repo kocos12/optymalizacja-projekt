@@ -69,13 +69,24 @@ void lab1()
 	//	solution optLag = lag(f1, A[i], B[i], 0.0001, 1e-7, 1000);
 	//	cout << optLag.x << " " << optLag.y << " " << optLag.f_calls << endl;
 	//}
-	cout << "FIBOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n";
-	solution opt = fib(f1, -100, 100, 1e-5);
-	cout << opt.x << " " << opt.y << " " << opt.f_calls << endl;
-	cout << "LAGRANGEEEEEEEEEEEEEEEEEEEEEEEEEEE\n";
-	solution optLag = lag(f1, -100, 100, 0.0001, 1e-7, 1000);
-	cout << optLag.x << " " << optLag.y << " " << optLag.f_calls << endl;
+	//cout << "FIBOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n";
+	//solution opt = fib(f1, -100, 100, 1e-5);
+	////cout << opt.x << " " << opt.y << " " << opt.f_calls << endl;
 
+	//for (int i = 0; i < 100; i++) {
+	//	//cout << opt.ud[i] << endl;
+	//}
+
+	//cout << "LAGRANGEEEEEEEEEEEEEEEEEEEEEEEEEEE\n";
+	//solution optLag = lag(f1, -100, 100, 0.0001, 1e-7, 1000);
+	////cout << optLag.x << " " << optLag.y << " " << optLag.f_calls << endl;
+
+	//for (int i = 0; i < 100; i++) {
+	//	cout << optLag.ud[i] << endl;
+	//}
+
+	double* p = expansion(fR, 20, 1, 1.5, 1000); 
+	cout << p[0] << "\t" << p[1] << "\t" << p[2] << endl;
 }
 
 void lab2()

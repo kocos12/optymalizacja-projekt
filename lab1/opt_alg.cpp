@@ -67,7 +67,8 @@ solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 	try
 	{
 		int n = static_cast<int>(ceil(log2(sqrt(5) * (b - a) / epsilon) / log2((1 + sqrt(5)) / 2)));
-
+		solution opt;
+		opt.ud = b - a;
 		double* A = new double[n];
 		double* B = new double[n];
 		double* C = new double[n];
@@ -103,12 +104,13 @@ solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 				B[i + 1] = B[i];
 				A[i + 1] = C[i];
 			}
+			opt.ud.add_row((B[i+1] - A[i+1]));
 			C[i + 1] = B[i + 1] - ((F[n - i - 2] / F[n - i - 1]) * (B[i + 1] - A[i + 1]));
 			D[i + 1] = A[i + 1] + B[i + 1] - C[i + 1];
 			fcalls += 2;
 		}
 
-		solution opt;
+		
 		//cout << i << endl;
 		opt.x = C[n - 3];
 		opt.y = ff(C[n - 3], ud1, ud2);
@@ -186,7 +188,7 @@ solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 				Xopt.flag = 2;
 				return Xopt;
 			}
-			Xopt.ud.add_row((B.x - A.x)());
+			Xopt.ud.add_row((B.x - A.x));
 			if (B.x - A.x < epsilon || abs(D.x() - D_old.x()) < gamma)
 			{
 				D.fit_fun(ff, ud1, ud2);
