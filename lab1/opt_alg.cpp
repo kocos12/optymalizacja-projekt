@@ -6,7 +6,7 @@ double* expansion(matrix(*ff)(matrix, matrix, matrix), double x0, double d, doub
 {
 	try
 	{
-		double* p = new double[2]{ 0,0 };
+		double* p = new double[3]{ 0,0,0 };
 		//Tu wpisz kod funkcji
 		int i = 0;
 		double x1;
@@ -15,21 +15,24 @@ double* expansion(matrix(*ff)(matrix, matrix, matrix), double x0, double d, doub
 		if (ff(x1,ud1,ud2) == ff(x0,ud1,ud2)) {
 			p[0] = x0;
 			p[1] = x1;
+			p[2] += 2;
 			return (p);
 		}
 		if (ff(x1, ud1, ud2) > ff(x0, ud1, ud2)) {
 			d = -d;
 			x1 = x0 + d;
+			p[2] += 2;
 			if (ff(x1, ud1, ud2) >= ff(x0, ud1, ud2)) {
 				p[0] = x1;
 				p[1] = x0-d;
+				p[2] += 2;
 				return (p);
 			}
 		}
 
 		double xi, xiplus1 = 0, ximinus1 = 0;
 		do {
-			if (solution::f_calls > Nmax){
+			if (p[2] > Nmax){
 				throw ("Error");
 			}
 			if (i > 1) {
@@ -41,6 +44,7 @@ double* expansion(matrix(*ff)(matrix, matrix, matrix), double x0, double d, doub
 			xiplus1 = x0 + pow(alpha, i) * d;
 			i++;
 			//cout << i << endl;
+			p[2] += 2;
 		} while (ff(xi, ud1, ud2) >= ff(xiplus1, ud1, ud2));
 
 		if (d > 0) {
@@ -72,12 +76,15 @@ solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 		double* F = new double[n];
 		F[0] = 1.;
 		F[1] = 1.;
+
+		int fcalls = 0;
+
 		for (int i = 2; i < n ; ++i) {
 			F[i] = F[i - 2] + F[i - 1];
 		}
 		n--;
-		cout << "L/epsilon = \t" << (b-a) / epsilon << endl;
-		cout << "F[n] = \t" << F[n] << endl;
+		//cout << "L/epsilon = \t" << (b-a) / epsilon << endl;
+		//cout << "F[n] = \t" << F[n] << endl;
 		
 		A[0] = a;
 		B[0] = b;
@@ -98,12 +105,14 @@ solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 			}
 			C[i + 1] = B[i + 1] - ((F[n - i - 2] / F[n - i - 1]) * (B[i + 1] - A[i + 1]));
 			D[i + 1] = A[i + 1] + B[i + 1] - C[i + 1];
+			fcalls += 2;
 		}
 
 		solution opt;
 		//cout << i << endl;
 		opt.x = C[n - 3];
 		opt.y = ff(C[n - 3], ud1, ud2);
+		opt.f_calls = fcalls;
 		//cout << C[n - 3] << " " << ff(C[n - 3], ud1, ud2) << endl;
 		return opt; 
 	}
@@ -119,6 +128,7 @@ solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 	try
 	{
 		solution Xopt;
+		solution::f_calls = 0;
 		Xopt.ud = b - a;
 		solution A(a), B(b), C, D, D_old(a);
 		C.x = (a + b) / 2;
@@ -132,6 +142,7 @@ solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 			m = m2d(A.y * (B.x - C.x) + B.y * (C.x - A.x) + C.y * (A.x - B.x));
 			if (m <= 0)
 			{
+				D_old.fit_fun(ff, ud1, ud2);
 				Xopt = D_old;
 				Xopt.flag = 2;
 				return Xopt;
@@ -170,6 +181,7 @@ solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 			}
 			else
 			{
+				D_old.fit_fun(ff, ud1, ud2);
 				Xopt = D_old;
 				Xopt.flag = 2;
 				return Xopt;
@@ -177,12 +189,14 @@ solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 			Xopt.ud.add_row((B.x - A.x)());
 			if (B.x - A.x < epsilon || abs(D.x() - D_old.x()) < gamma)
 			{
+				D.fit_fun(ff, ud1, ud2);
 				Xopt = D;
 				Xopt.flag = 0;
 				break;
 			}
 			if (solution::f_calls > Nmax)
 			{
+				D.fit_fun(ff, ud1, ud2);
 				Xopt = D;
 				Xopt.flag = 1;
 				break;
