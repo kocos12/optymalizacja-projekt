@@ -51,12 +51,12 @@ void lab1()
 	//		alfa = 1.69;
 	//	}
 
-	//	f = (rand() % (100 + 100 + 1) - 100);
+		//f = (rand() % (100 + 100 + 1) - 100);
 
-	//	double* p = expansion(f1, f, 1, alfa, 1000); //1.5, 2, 1.69
-	//	cout << f << "\t" << p[0] << "\t" << p[1] << "\t" << p[2] << endl;
+		//double* p = expansion(f1, f, 1, alfa, 1000); //1.5, 2, 1.69
+		//cout << f << "\t" << p[0] << "\t" << p[1] << "\t" << p[2] << endl;
 	//	A[i] = p[0];
-	//	B[i] = p[1];
+    //	B[i] = p[1];
 
 	//}
 	//cout << "FIBOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n";
@@ -84,14 +84,25 @@ void lab1()
 	//for (int i = 0; i < 100; i++) {
 	//	cout << optLag.ud[i] << endl;
 	//}
-
-	//double* p = expansion(fR, 20, 1, 1.5, 1000); 
+	//double* p = expansion(fR, 10, 1, 1.5, 1000); //1.5, 2, 1.69
 	//cout << p[0] << "\t" << p[1] << "\t" << p[2] << endl;
+
+	solution opt = fib(fR, 1, 100, 1e-5);
+	cout << opt.x << " " << opt.y << " " << opt.f_calls << endl;
+
+	solution optLag = lag(fR, 1, 100, 1e-5, 1e-7, 1000);
+	cout << optLag.x << " " << optLag.y << " " << optLag.f_calls << endl;
+	
+	matrix ud1,ud2;
+	matrix xd = fR(opt.x, ud1 , 10);
+	xd = fR(optLag.x, ud1 , 10);
+
+	//cout << xd << endl;
 }
 
 void lab2()
 {
-	solution optHJ = HJ(f2, { 0,0 }, 0.5, 0.001, 1000);
+	//solution optHJ = HJ(f2, { 0,0 }, 0.5, 0.001, 1000);
 }
 
 void lab3()

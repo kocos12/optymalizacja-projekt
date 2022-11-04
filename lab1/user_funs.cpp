@@ -24,12 +24,22 @@ matrix df1(double t, matrix Y, matrix ud1, matrix ud2) {
 	matrix dY(3, 1);
 
 	double Fin = 0.01;
-	double FAout = a * b * m2d(ud2) * sqrt((2 * g * Y(0)) / Pa);
-	double FBout = a * b * DB * sqrt(2 * g * Y(1) / Pb);
+	double FAout, FBout;
+	if (Y(0) > 0) FAout = a * b * m2d(ud2) * sqrt((2 * g * Y(0)) / Pa);
+	else FAout = 0;
+	
+	if (Y(1) > 1) {
+		 FBout = a * b * DB * sqrt(2 * g * Y(1) / Pb);
+	}
+	else
+	{
+		 FBout = 0;
+	}
+	
 
 	dY(0) = -FAout;
 	dY(1) = FAout + Fin - FBout;
-	dY(2) = Fin / Y(1) * (10 - Y(2)) + FAout / Y(1) * (tempA_pocz - Y(2));
+	dY(2) = Fin / Y(1) * (tempB_pocz - Y(2)) + FAout / Y(1) * (tempA_pocz - Y(2));
 
 	return dY;
 
@@ -39,16 +49,22 @@ matrix fR(matrix x, matrix ud1, matrix ud2)
 {
 
 	matrix Y0 = matrix(3, new double[3]{ 5, 1, 10 });
-
+	
 	matrix *Y = solve_ode(df1, 0, 1, 1000, Y0, ud1, x);
 
-	double maks = -1000000;
-	for (int i = 0; i < 3; i++){
-		if (Y[i] > maks) {
-			maks = m2d(Y[i]);
+	double y;
+	double maks = Y[1](0,2);
+	for (int i = 0; i < get_len(Y[0]); i++){
+		if (Y[1](i,2) > maks) {
+			maks = Y[1](i,2);
 		}
+
+		y = abs(maks - 50);
+		
+		if (ud2 == 10) cout << i << "\t" << Y[1](i,0) << "\t" << Y[1](i,1) << "\t" << Y[1](i,2) << endl;
 	}
-	double y = abs(maks - 50);
+
+	//cout << y << endl;
 	return y;
 }
 

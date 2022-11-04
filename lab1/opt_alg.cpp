@@ -1,7 +1,5 @@
 #include"opt_alg.h"
 
-
-
 double* expansion(matrix(*ff)(matrix, matrix, matrix), double x0, double d, double alpha, int Nmax, matrix ud1, matrix ud2)
 {
 	try
@@ -301,34 +299,34 @@ solution Rosen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix s0, double
 	try
 	{
 		solution Xopt;
-		// "e" w pseudokodzie to wersory 
-		// przy tworzeniu dj itd trzeba popatrzec na konstruktor matrixa bo to ma byc macierz wektorow 
-		int n = 2;
-		int i = 0;
-		//tu wpisz kod funkcji
-		do {
-			for (;;) {
-				if() {
+		//// "e" w pseudokodzie to wersory 
+		//// przy tworzeniu dj itd trzeba popatrzec na konstruktor matrixa bo to ma byc macierz wektorow 
+		//int n = 2;
+		//int i = 0;
+		////tu wpisz kod funkcji
+		//do {
+		//	for (;;) {
+		//		if() {
 
-				}
-				else {
+		//		}
+		//		else {
 
-				}
-			}
+		//		}
+		//	}
 			
-			i++;
+		//	i++;
 			
-			if() {
-				//zmiana bazy kierunkow
+		//	if() {
+		//		//zmiana bazy kierunkow
 			
-			}
+		//	}
 
-			if(solution::f_calls > Nmax) {
-				break;
-			}
+		//	if(solution::f_calls > Nmax) {
+		//		break;
+		//	}
 
-		} while ();
-		return xopt;
+		//} while ();
+		//return xopt;
 	}
 	catch (string ex_info)
 	{
