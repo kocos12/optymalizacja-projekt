@@ -37,7 +37,6 @@ matrix df1(double t, matrix Y, matrix ud1, matrix ud2) {
 
 matrix fR(matrix x, matrix ud1, matrix ud2)
 {
-	matrix Yj;
 
 	matrix Y0 = matrix(3, new double[3]{ 5, 1, 10 });
 
@@ -51,4 +50,9 @@ matrix fR(matrix x, matrix ud1, matrix ud2)
 	}
 	double y = abs(maks - 50);
 	return y;
+}
+
+matrix f2(matrix x, matrix ud1, matrix ud2) {	
+	double pi = 3.1415;
+	return x[0] * x[0] + x[1] * x[1] - cos(2.5 * pi * m2d(x[0])) - cos(2.5 * pi * m2d(x[1])) + 2;
 }

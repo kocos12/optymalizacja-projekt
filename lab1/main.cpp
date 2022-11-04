@@ -85,13 +85,13 @@ void lab1()
 	//	cout << optLag.ud[i] << endl;
 	//}
 
-	double* p = expansion(fR, 20, 1, 1.5, 1000); 
-	cout << p[0] << "\t" << p[1] << "\t" << p[2] << endl;
+	//double* p = expansion(fR, 20, 1, 1.5, 1000); 
+	//cout << p[0] << "\t" << p[1] << "\t" << p[2] << endl;
 }
 
 void lab2()
 {
-
+	solution optHJ = HJ(f2, { 0,0 }, 0.5, 0.001, 1000);
 }
 
 void lab3()

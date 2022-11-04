@@ -124,7 +124,6 @@ solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 	}
 }
 
-
 solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double epsilon, double gamma, int Nmax, matrix ud1, matrix ud2)
 {
 	try
@@ -218,8 +217,35 @@ solution HJ(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double alp
 	try
 	{
 		solution Xopt;
+		matrix x = x0;
+		matrix xB, _xB;
 		//Tu wpisz kod funkcji
-
+		do {
+			xB = x;
+			x = probuj(ff, xB, s, ud1, ud2);
+			if (ff(x, ud1, ud2) < ff(xB, ud1, ud2)) {
+				do {
+					_xB = xB;
+					xB = x;
+					x = 2 * xB - _xB;
+					x = probuj(ff, x, s, ud1, ud2);
+				
+					if(solution::f_calls > Nmax) {
+						throw ("Error");
+					}
+				} while (ff(x, ud1, ud2) >= ff(xB, ud1, ud2));
+				x = xB;
+			}
+			else {
+				s = s * alpha;
+			}
+			if (solution::f_calls>Nmax){
+				throw ("Error");
+			}
+		} while (s < epsilon);
+		Xopt.x[0] = xB[0];
+		Xopt.x[1] = xB[1];
+		Xopt.fit_fun(ff, ud1, ud2);
 		return Xopt;
 	}
 	catch (string ex_info)
@@ -227,6 +253,34 @@ solution HJ(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double alp
 		throw ("solution HJ(...):\n" + ex_info);
 	}
 }
+
+
+matrix probuj(matrix(*ff)(matrix, matrix, matrix),matrix x, double s, matrix ud1, matrix ud2) {
+	int n = 2;
+	double vect1[] = { 1,0 };
+	double vect2[] = { 0,1 };
+
+	matrix mvect1(2, vect1);
+	matrix mvect2(2, vect2);
+
+	matrix vecTab[] = { mvect1,mvect2 };
+
+	matrix S(s);
+
+	for (int j = 1; j < n; j++)
+	{
+		if (ff(x+S*vecTab[j], ud1, ud2) < ff(x, ud1, ud2))
+		{
+			x = x + S * vecTab[j];
+		}
+		else if (ff(x-S*vecTab[j], ud1, ud2)<ff(x, ud1, ud2))
+		{
+			x = x - S*vecTab[j];
+		}
+	}
+	return x;
+}
+
 
 solution HJ_trial(matrix(*ff)(matrix, matrix, matrix), solution XB, double s, matrix ud1, matrix ud2)
 {
@@ -247,9 +301,34 @@ solution Rosen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix s0, double
 	try
 	{
 		solution Xopt;
-		//Tu wpisz kod funkcji
+		// "e" w pseudokodzie to wersory 
+		// przy tworzeniu dj itd trzeba popatrzec na konstruktor matrixa bo to ma byc macierz wektorow 
+		int n = 2;
+		int i = 0;
+		//tu wpisz kod funkcji
+		do {
+			for (;;) {
+				if() {
 
-		return Xopt;
+				}
+				else {
+
+				}
+			}
+			
+			i++;
+			
+			if() {
+				//zmiana bazy kierunkow
+			
+			}
+
+			if(solution::f_calls > Nmax) {
+				break;
+			}
+
+		} while ();
+		return xopt;
 	}
 	catch (string ex_info)
 	{
