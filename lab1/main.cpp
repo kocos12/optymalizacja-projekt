@@ -28,6 +28,15 @@ int main()
 	{
 		cerr << "error:\n";
 		cerr << ex_info << endl << endl;
+	}
+	try
+	{
+		lab2();
+	}
+	catch (string ex_info)
+	{
+		cerr << "error:\n";
+		cerr << ex_info << endl << endl;
 	} 
 	system("pause");
 	return 0;
@@ -87,22 +96,26 @@ void lab1()
 	//double* p = expansion(fR, 10, 1, 1.5, 1000); //1.5, 2, 1.69
 	//cout << p[0] << "\t" << p[1] << "\t" << p[2] << endl;
 
-	solution opt = fib(fR, 1, 100, 1e-5);
-	cout << opt.x << " " << opt.y << " " << opt.f_calls << endl;
+	//solution opt = fib(fR, 1, 100, 1e-5);
+	//cout << opt.x << " " << opt.y << " " << opt.f_calls << endl;
 
-	solution optLag = lag(fR, 1, 100, 1e-5, 1e-7, 1000);
-	cout << optLag.x << " " << optLag.y << " " << optLag.f_calls << endl;
-	
-	matrix ud1,ud2;
-	matrix xd = fR(opt.x, ud1 , 10);
-	xd = fR(optLag.x, ud1 , 10);
+	//solution optLag = lag(fR, 1, 100, 1e-5, 1e-7, 1000);
+	//cout << optLag.x << " " << optLag.y << " " << optLag.f_calls << endl;
+	//
+	//matrix ud1,ud2;
+	//matrix xd = fR(opt.x, ud1 , 10);
+	//xd = fR(optLag.x, ud1 , 10);
 
 	//cout << xd << endl;
 }
 
 void lab2()
 {
-	//solution optHJ = HJ(f2, { 0,0 }, 0.5, 0.001, 1000);
+	double pom[] = { 1,0.5 };
+	matrix x0(2, pom);
+	solution optHJ = Rosen(f2, x0, 2, 0.5, 1e-3, 1000, 0, 0);
+	cout << "wyniki:\nx = " << optHJ.x << "\ty = " << optHJ.y << endl << "f_calls = " << optHJ.f_calls << "\texit flag = " << optHJ.flag << endl;
+ 
 }
 
 void lab3()

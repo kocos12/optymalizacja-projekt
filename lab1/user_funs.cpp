@@ -70,5 +70,7 @@ matrix fR(matrix x, matrix ud1, matrix ud2)
 
 matrix f2(matrix x, matrix ud1, matrix ud2) {	
 	double pi = 3.1415;
-	return x[0] * x[0] + x[1] * x[1] - cos(2.5 * pi * m2d(x[0])) - cos(2.5 * pi * m2d(x[1])) + 2;
+	matrix wynik(0);
+	wynik = (x[0] * x[0]) + (x[1] * x[1]) - cos(2.5 * pi * m2d(x[0])) - cos(2.5 * pi * m2d(x[1])) + 2;
+	return wynik;
 }
