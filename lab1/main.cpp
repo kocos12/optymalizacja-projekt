@@ -38,7 +38,7 @@ int main()
 		cerr << "error:\n";
 		cerr << ex_info << endl << endl;
 	} 
-	system("pause");
+	//system("pause");
 	return 0;
 }
 
@@ -111,10 +111,46 @@ void lab1()
 
 void lab2()
 {
-	double pom[] = { 1,0.5 };
+	//int f;
+	//double x1[300];
+	//double x2[300];
+
+	//for (int i = 0; i < 300; i++) {
+	//	double krok;
+	//	if (i < 100) {
+	//		krok = 0.5;
+	//	}
+	//	else if (i >= 100 && i < 200) {
+	//		krok = 0.25;
+	//	}
+	//	else {
+	//		krok = 0.75;
+	//	}
+
+	//	x1[i] = 2. * ((double)rand() / (double)RAND_MAX) - 1; //od 0 do 1
+	//	x2[i] = 2. * ((double)rand() / (double)RAND_MAX) -1;
+
+	//	double pom[] = { x1[i],x2[i] };
+	//	matrix x0(2, pom);
+	//	solution optHJ = HJ(f2, x0, krok, 0.5, 1e-3, 1000, 0, 0);
+	//	//cout << "wyniki:\nx1 = " << optHJ.x(0) << "\tx2 = " << optHJ.x(1) << "\ty = " << optHJ.y << endl << "f_calls = " << optHJ.f_calls << "\texit flag = " << optHJ.flag << endl;
+	//	//cout << pom[0] << " " << pom[1] << " " << optHJ.x(0) << " " << optHJ.x(1) << " " << optHJ.y << " " << optHJ.f_calls << endl;
+	//	solution::f_calls = 0;
+	//}
+
+	//double pom[] = { 0.12, 0.21 };
+	//matrix x0(2, pom);
+	
+	//solution optHJ = HJ(f2, x0, 0.5, 0.5, 1e-3, 1000, 0, 0);
+
+	double pom[] = {3, 5 };
 	matrix x0(2, pom);
-	solution optHJ = Rosen(f2, x0, 2, 0.5, 1e-3, 1000, 0, 0);
-	cout << "wyniki:\nx = " << optHJ.x << "\ty = " << optHJ.y << endl << "f_calls = " << optHJ.f_calls << "\texit flag = " << optHJ.flag << endl;
+
+	//solution optHJ = HJ(fR_lab2, x0, 0.5, 0.5, 1e-3, 1000, 0, 0);
+	//cout << "\nwyniki:\n" << optHJ.x(0) << "\t" << optHJ.x(1) << "\t" << optHJ.y << endl;// << "f_calls = " << optHJ.f_calls << "\texit flag = " << optHJ.flag << endl;
+	matrix x(2, new double[2]{ 3.8457,4.83594 });
+	matrix wynik = fR_lab2(x, 0, 0);
+	cout << wynik << endl;
  
 }
 

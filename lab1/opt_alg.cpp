@@ -215,24 +215,28 @@ solution HJ(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double alp
 	try
 	{
 		solution Xopt;
-		matrix x = x0;
-		matrix xB, _xB;
+		solution x(x0);
+		solution xB, _xB; //typ solutiom
 		//Tu wpisz kod funkcji
+		xB = x;
+		xB.fit_fun(ff,ud1,ud2);
 		do {
-			xB = x;
+			
 			x = probuj(ff, xB, s, ud1, ud2);
-			if (ff(x, ud1, ud2) < ff(xB, ud1, ud2)) {
+			if (x.y < xB.y) {
 				do {
 					_xB = xB;
 					xB = x;
-					x = (2 * xB) - _xB;
+					xB.fit_fun(ff, ud1, ud2);
+					x.x = (2 * xB.x) - _xB.x;
 					x = probuj(ff, x, s, ud1, ud2);
 				
 					if(solution::f_calls > Nmax) {
 						throw ("Error");
 					}
-				} while (ff(x, ud1, ud2) < ff(xB, ud1, ud2));
-				x = xB;
+					
+				} while (x.y < xB.y);
+			
 			}
 			else {
 				s = s * alpha;
@@ -240,10 +244,9 @@ solution HJ(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double alp
 			if (solution::f_calls>Nmax){
 				throw ("Error");
 			}
+			//cout << xB.x(0) << "\t" << xB.x(1) << endl;
 		} while (s >= epsilon);
-		Xopt.x[0] = xB[0];
-		Xopt.x[1] = xB[1];
-		Xopt.fit_fun(ff, ud1, ud2);
+		Xopt = xB;
 		return Xopt;
 	}
 	catch (string ex_info)
@@ -253,8 +256,8 @@ solution HJ(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double alp
 }
 
 
-matrix probuj(matrix(*ff)(matrix, matrix, matrix),matrix x, double s, matrix ud1, matrix ud2) {
-	int n = 2;
+solution probuj(matrix(*ff)(matrix, matrix, matrix),solution xB, double s, matrix ud1, matrix ud2) {
+	int n = get_dim(xB);
 	double vect1[] = { 1,0 };
 	double vect2[] = { 0,1 };
 
@@ -262,25 +265,33 @@ matrix probuj(matrix(*ff)(matrix, matrix, matrix),matrix x, double s, matrix ud1
 	matrix mvect2(2, vect2);
 
 	matrix vecTab[] = { mvect1,mvect2 };
-
+	solution X;
 	matrix S(s);
 
 	for (int j = 0; j < n; j++)
 	{
 		
+		X.x = xB.x + S * vecTab[j];
+		X.fit_fun(ff, ud1, ud2);
+		if (X.y < xB.y)
+		{
+			xB = X;
+		}
+		else
+		{
+			X.x = xB.x - S * vecTab[j];
+			X.fit_fun(ff, ud1, ud2);
 
-		if (ff(x+(S*vecTab[j]), ud1, ud2) < ff(x, ud1, ud2))
-		{
-			x = x + (S * vecTab[j]);
+			if (X.y < xB.y)
+			{
+				xB = X;
+			}
+
 		}
-		else if (ff(x-(S*vecTab[j]), ud1, ud2)<ff(x, ud1, ud2))
-		{
-			x = x - (S*vecTab[j]);
-		}
+
 	}
-	return x;
+	return xB;
 }
-
 
 solution HJ_trial(matrix(*ff)(matrix, matrix, matrix), solution XB, double s, matrix ud1, matrix ud2)
 {

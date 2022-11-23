@@ -69,8 +69,32 @@ matrix fR(matrix x, matrix ud1, matrix ud2)
 }
 
 matrix f2(matrix x, matrix ud1, matrix ud2) {	
-	double pi = 3.1415;
-	matrix wynik(0);
-	wynik = (x[0] * x[0]) + (x[1] * x[1]) - cos(2.5 * pi * m2d(x[0])) - cos(2.5 * pi * m2d(x[1])) + 2;
-	return wynik;
+	double pi = 3.141592;
+	return (x(0) * x(0)) + (x(1) * x(1)) - cos(2.5 * pi * x(0)) - cos(2.5 * pi * x(1)) + 2;
+}
+
+matrix fR_lab2(matrix x, matrix ud1, matrix ud2) {
+	matrix y;
+	matrix Y0(2, 1), Y_ref(2, new double[2]{ 3.14,0 });
+	matrix* Y = solve_ode(df_lab2, 0, 0.1, 100, Y0, Y_ref, x); 
+	int n = get_len(Y[0]);
+	cout << "n = " << n << endl;
+	y = 0;
+	double t = 0.0;
+	for (int i = 0; i < n; i++) {
+		y = y + 10 * pow(Y_ref(0) - Y[1](i, 0), 2) + pow(Y_ref(1) - Y[1](i, 1), 2) + pow(x(0) * (Y_ref(0) - Y[1](i, 0)) + x(1) * (Y_ref(1) - Y[1](i, 1)), 2);
+		y = y * 0.1;
+		cout << t << "\t"<<Y[1](i, 0)<< "\t" <<  Y[1](i, 1) << endl;
+		t += 0.1;
+	}
+	return y;
+}
+
+matrix df_lab2(double t, matrix Y, matrix ud1, matrix ud2) {
+	double mr = 1, l = 0.5, mc = 9, b = 0.5;
+	double I = ((mr * l * l) / 3) + (mc * l * l);
+	matrix dY(2, 1);
+	dY(0) = Y(1);
+	dY(1) = (ud2(0) * (ud1(0) - Y(0)) + ud2(1) * (ud1(1) - Y(1)) - b * Y(1)) / I;
+	return dY;
 }
