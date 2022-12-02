@@ -403,9 +403,86 @@ solution sym_NM(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double
 {
 	try
 	{
-		solution Xopt;
-		//Tu wpisz kod funkcji
+		solution Xopt, p0, p1, p2, pSrednie, pOdb, pMin, pMax, pE, pZ;
+		solution p[3];
+		double vect1[] = { 1,0 };
+		double vect2[] = { 0,1 };
 
+		matrix e1(2, vect1);
+		matrix e2(2, vect2);
+
+		matrix e[] = { e1,e2 };
+		//Tu wpisz kod funkcji
+		p[0].x = x0;
+		p0.x = x0;
+		for(int i = 1; i < 3; i++){
+			p[i].x = p[0].x + s * e[i];
+		}
+
+		do {
+			for(int i = 0; i < 3; i++){
+				p[0].fit_fun(ff, ud1, ud2);
+			}
+
+			pMin = p[0];
+			pMax = p[0];
+			for (int i = 1;i<3;i++){
+				if (p[i].y < pMin.y) pMin = p[i];
+				if (p[i].y > pMax.y) pMax = p[i];
+			}
+
+
+			pSrednie.y = (p[0].y + p[1].y + p[2].y) / 3;
+			pOdb.y = pSrednie.y + alpha * (pSrednie.y - pMax.y);
+
+			if (pOdb.y < pMin.y)
+			{
+				pE.x = pSrednie.x + gamma * (pOdb.x - pSrednie.x);
+
+				if (pE.y < pOdb.y)
+				{
+					pMax = pE;
+				}
+				else
+				{
+					pMax = pOdb;
+				}
+			}
+			else
+			{
+				if (pMin.y <= pOdb.y && pOdb.y < pMax.y)
+				{
+					pMax = pOdb;
+				}
+				else
+				{
+					pZ.x = pSrednie.x + (beta * (pMax.x - pSrednie.x));
+
+					if (pZ.y > pMax.y)
+					{
+						for (int i = 0; i < 3; i++)
+						{
+							//indeks gdzie min
+							if (p[i].y != pMin.y)
+							{
+								p[i].x = delta * (p[i].x + pMin.x);
+							}
+						}
+					}
+					else 
+					{
+						pMax = pZ;
+					}
+				}
+			}
+			if (solution::f_calls > Nmax) {
+				throw ("Error");
+			}
+
+		} while (pMin.x - p[0].x < epsilon);
+		
+		Xopt = pMin;
+		Xopt.fit_fun(ff, ud1, ud2);
 		return Xopt;
 	}
 	catch (string ex_info)

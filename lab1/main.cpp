@@ -38,6 +38,15 @@ int main()
 		cerr << "error:\n";
 		cerr << ex_info << endl << endl;
 	} 
+	try
+	{
+		lab3();
+	}
+	catch (string ex_info)
+	{
+		cerr << "error:\n";
+		cerr << ex_info << endl << endl;
+	}
 	//system("pause");
 	return 0;
 }
@@ -156,7 +165,9 @@ void lab2()
 
 void lab3()
 {
-
+	matrix chuj(2, new double[2]{ 0, 0 });
+	solution chujSolution = sym_NM(f3, chuj, 3, 1, 0.5, 2, 0.5, 0.01, 1000);
+		cout << "x1 = " << chujSolution.x(0) << "\tx2 = " << chujSolution.x(1) << "\ty = " << chujSolution.y << endl;
 }
 
 void lab4()

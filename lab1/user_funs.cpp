@@ -98,3 +98,10 @@ matrix df_lab2(double t, matrix Y, matrix ud1, matrix ud2) {
 	dY(1) = (ud2(0) * (ud1(0) - Y(0)) + ud2(1) * (ud1(1) - Y(1)) - b * Y(1)) / I;
 	return dY;
 }
+
+matrix f3(matrix x, matrix ud1, matrix ud2)
+{
+	double pi = 3.141592;
+	return pow((x(0) - 2), 2) + pow((x(1) - 3), 2);
+	//return (sin(pi * sqrt((x(0) / pi) * (x(0) / pi) + (x(1) / pi) * (x(1) / pi)))) / (pi * sqrt(pow(x(0) / pi, 2) + pow(x(1) / pi, 2)));
+}
