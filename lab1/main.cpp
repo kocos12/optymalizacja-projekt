@@ -20,24 +20,24 @@ void lab6();
 
 int main()
 {
-	try
-	{
-		lab1();
-	}
-	catch (string ex_info)
-	{
-		cerr << "error:\n";
-		cerr << ex_info << endl << endl;
-	}
-	try
-	{
-		lab2();
-	}
-	catch (string ex_info)
-	{
-		cerr << "error:\n";
-		cerr << ex_info << endl << endl;
-	} 
+	//try
+	//{
+	//	lab1();
+	//}
+	//catch (string ex_info)
+	//{
+	//	cerr << "error:\n";
+	//	cerr << ex_info << endl << endl;
+	//}
+	//try
+	//{
+	//	lab2();
+	//}
+	//catch (string ex_info)
+	//{
+	//	cerr << "error:\n";
+	//	cerr << ex_info << endl << endl;
+	//} 
 	try
 	{
 		lab3();
@@ -152,14 +152,14 @@ void lab2()
 	
 	//solution optHJ = HJ(f2, x0, 0.5, 0.5, 1e-3, 1000, 0, 0);
 
-	double pom[] = {3, 5 };
-	matrix x0(2, pom);
+	//double pom[] = {3, 5 };
+	//matrix x0(2, pom);
 
-	//solution optHJ = HJ(fR_lab2, x0, 0.5, 0.5, 1e-3, 1000, 0, 0);
-	//cout << "\nwyniki:\n" << optHJ.x(0) << "\t" << optHJ.x(1) << "\t" << optHJ.y << endl;// << "f_calls = " << optHJ.f_calls << "\texit flag = " << optHJ.flag << endl;
-	matrix x(2, new double[2]{ 3.8457,4.83594 });
-	matrix wynik = fR_lab2(x, 0, 0);
-	cout << wynik << endl;
+	////solution optHJ = HJ(fR_lab2, x0, 0.5, 0.5, 1e-3, 1000, 0, 0);
+	////cout << "\nwyniki:\n" << optHJ.x(0) << "\t" << optHJ.x(1) << "\t" << optHJ.y << endl;// << "f_calls = " << optHJ.f_calls << "\texit flag = " << optHJ.flag << endl;
+	//matrix x(2, new double[2]{ 3.8457,4.83594 });
+	//matrix wynik = fR_lab2(x, 0, 0);
+	//cout << wynik << endl;
  
 }
 
