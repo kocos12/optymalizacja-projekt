@@ -412,8 +412,14 @@ solution sym_NM(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double
 {
 	try
 	{
-		solution Xopt, p0, p1, p2, pSrednie, pOdb, pMin, pMax, pE, pZ;
+		solution Xopt, pSrednie, pOdb, pE, pZ;
+		matrix tmp_matrix(2, new double[2]{ 0,0 });
+		pSrednie.x = tmp_matrix;
+		pOdb.x = tmp_matrix;
+		pE.x = tmp_matrix;
+		pZ.x = tmp_matrix;
 		solution p[3];
+		int i_Max, i_Min;
 		double vect1[] = { 1,0 };
 		double vect2[] = { 0,1 };
 
@@ -425,6 +431,7 @@ solution sym_NM(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double
 		double temp2 = 0;
 		double tmp_w1 = 0;
 		double tmp_w2 = 0;
+		double tmpMax;
 		int k = 0;
 
 		matrix temp(2, new double[2] {0, 0});
@@ -433,7 +440,6 @@ solution sym_NM(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double
 
 		//Tu wpisz kod funkcji
 		p[0].x = x0;
-		p0.x = x0;
 		for(int i = 1; i < 3; i++){
 			p[i].x = p[0].x + s * e[i-1];
 		}
@@ -441,70 +447,66 @@ solution sym_NM(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double
 		do {
 			for(int i = 0; i < 3; i++){
 				p[i].fit_fun(ff, ud1, ud2);
-				//cout << p[i].y << "\t";
+				cout << p[i].y << "\t";
 			}
 			cout << endl;
 
-			pMin = p[0];
-			pMax = p[0];
+			i_Max = 0;
+			i_Min = 0;
 			for (int i = 1;i<3;i++){
-				if (p[i].y < pMin.y) pMin = p[i];
-				if (p[i].y > pMax.y) pMax = p[i];
+				if (p[i].y < p[i-1].y) i_Min = i;
+				if (p[i].y > p[i-1].y) i_Max = i;
 			}
-			//cout << "pMin = " << pMin.y << "\tpMax = " << pMax.y << endl;
-
-
-			pMin.fit_fun(ff, ud1, ud2);
-			pMax.fit_fun(ff, ud1, ud2);
+			
 
 			//pSrednie.y = (p[0].y + p[1].y + p[2].y) / 3;
 			for(int i = 0; i<3;i++){
-				if(p[i].y != pMax.y) pSrednie.x = pSrednie.x + ((1 / 3) * p[i].x);
+				if(i != i_Max) pSrednie.x = pSrednie.x + ((1 / 2.0) * p[i].x);
 			}
 			pSrednie.fit_fun(ff, ud1, ud2);
 
-			pOdb.x = pSrednie.x + alpha * (pSrednie.x - pMax.x);
+			pOdb.x = pSrednie.x + alpha * (pSrednie.x - p[i_Max].x);
 			pOdb.fit_fun(ff, ud1, ud2);
 
-			if (pOdb.y < pMin.y)
+			if (pOdb.y < p[i_Min].y)
 			{
 				pE.x = pSrednie.x + gamma * (pOdb.x - pSrednie.x);
 				pE.fit_fun(ff, ud1, ud2);
 
 				if (pE.y < pOdb.y)
 				{
-					pMax = pE;
+					p[i_Max] = pE;
 				}
 				else
 				{
-					pMax = pOdb;
+					p[i_Max] = pOdb;
 				}
 			}
 			else
 			{
-				if (pMin.y <= pOdb.y && pOdb.y < pMax.y)
+				if (p[i_Min].y <= pOdb.y && pOdb.y < p[i_Max].y)
 				{
-					pMax = pOdb;
+					p[i_Max] = pOdb;
 				}
 				else
 				{
-					pZ.x = pSrednie.x + (beta * (pMax.x - pSrednie.x));
+					pZ.x = pSrednie.x + (beta * (p[i_Max].x - pSrednie.x));
 					pZ.fit_fun(ff, ud1, ud2);
 
-					if (pZ.y > pMax.y)
+					if (pZ.y > p[i_Max].y)
 					{
 						for (int i = 0; i < 3; i++)
 						{
 							//indeks gdzie min
-							if (p[i].y != pMin.y)
+							if (p[i].y != p[i_Min].y)
 							{
-								p[i].x = delta * (p[i].x + pMin.x);
+								p[i].x = delta * (p[i].x + p[i_Min].x);
 							}
 						}
 					}
 					else 
 					{
-						pMax = pZ;
+						p[i_Max] = pZ;
 					}
 				}
 			}
@@ -512,21 +514,34 @@ solution sym_NM(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double
 				throw ("Error");
 			}
 
-			if (k > 120) break;
+			if (k > 20) break;
 
 			cout << "iteracja nr. " << k << endl;
 			k++;
 
-			temp = pMin.x - p[0].x;
-			tmp_w1_tmp = pMin.x - p[1].x;
-			tmp_w2_tmp = pMin.x - p[2].x;
+			if (i_Min != 0) {
+				temp = p[i_Min].x - p[0].x;
+				temp2 = norm(temp2);
+			}
+			else temp2 = -100000;
+			if (i_Min != 1) {
+				tmp_w1_tmp = p[i_Min].x - p[1].x;
+				tmp_w1 = norm(tmp_w1_tmp);
+			}
+			else tmp_w1 = -100000;
+			if (i_Min != 2) {
+				tmp_w2_tmp = p[i_Min].x - p[2].x;
+				tmp_w2 = norm(tmp_w2_tmp);
+			}
+			else tmp_w2 = -10000;
 
-			temp2 = sqrt(temp(0) * temp(0) + temp(1) * temp(1));
-			tmp_w1 = sqrt(tmp_w1_tmp(0) * tmp_w1_tmp(0) + tmp_w1_tmp(1) * tmp_w1_tmp(1));
-			tmp_w2 = sqrt(tmp_w2_tmp(0) * tmp_w2_tmp(0) + tmp_w2_tmp(1) * tmp_w2_tmp(1));
-		} while (temp2 < epsilon || tmp_w1 < epsilon || tmp_w2 < epsilon);
+			
+			tmpMax = max(temp2, tmp_w1);
+			tmpMax = max(tmp_w1, tmp_w2);
+	
+		} while (tmpMax > epsilon);
 		
-		Xopt = pMin;
+		Xopt = p[i_Min];
 		Xopt.fit_fun(ff, ud1, ud2);
 		return Xopt;
 	}
