@@ -105,3 +105,15 @@ matrix f3(matrix x, matrix ud1, matrix ud2)
 	return pow((x(0) - 2), 2) + pow((x(1) - 3), 2);
 	//return (sin(pi * sqrt((x(0) / pi) * (x(0) / pi) + (x(1) / pi) * (x(1) / pi)))) / (pi * sqrt(pow(x(0) / pi, 2) + pow(x(1) / pi, 2)));
 }
+
+matrix f4(matrix x, matrix ud1, matrix ud2)
+{
+	return pow((x(0) + 2 * x(1) - 7), 2) + pow((2 * x(0) + x(1) - 5), 2);
+}
+
+matrix gf1(matrix x, matrix ud1, matrix ud2) {
+	matrix g(2, 1);
+	g(0) = 10 * x(0) + 8 * x(1) - 34;
+	g(1) = 8 * x(0) + 10 * x(1) - 38;
+	return g;
+}

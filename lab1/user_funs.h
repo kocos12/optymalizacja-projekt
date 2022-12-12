@@ -11,3 +11,6 @@ matrix fR_lab2(matrix x, matrix ud1, matrix ud2);
 matrix df_lab2(double t, matrix Y, matrix ud1, matrix ud2);
 
 matrix f3(matrix x, matrix ud1, matrix ud2);
+
+matrix f4(matrix x, matrix ud1, matrix ud2);
+matrix gf1(matrix x, matrix ud1, matrix ud2);

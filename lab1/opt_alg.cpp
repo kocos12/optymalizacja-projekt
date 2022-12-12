@@ -514,7 +514,7 @@ solution sym_NM(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double
 				throw ("Error");
 			}
 
-			if (k > 20) break;
+			//if (k > 20) break;
 
 			cout << "iteracja nr. " << k << endl;
 			k++;
@@ -557,6 +557,28 @@ solution SD(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix, mat
 	{
 		solution Xopt;
 		//Tu wpisz kod funkcji
+		int i = 0;
+		int n = get_len(x0);
+		solution X0, X1;
+		matrix P(2, new double[2]{ n, 2 }), d;
+		double* ab_db;
+		matrix ab(2, new double[2]{ 0,0 });
+		soultion x[2], h;
+		x[0] = x0;
+		
+		do {
+			d = -1. * gf(x[0], ud1, ud2);
+			P.set_col(x0, 0);
+			P.set_col(d, 1);
+			ab_db = expansion(ff, x(0), d(0), 1.5, Nmax, ud1, ud2);
+			ab[0] = ab_db[0];
+			ab[1] = ab_db[1];
+
+			i++;
+			if (solution::f_calls > Nmax) {
+				throw ("Error");
+			}
+		} while ();
 
 		return Xopt;
 	}
@@ -603,7 +625,55 @@ solution golden(matrix(*ff)(matrix, matrix, matrix), double a, double b, double 
 	{
 		solution Xopt;
 		//Tu wpisz kod funkcji
-
+		int i = 0;
+		double alfa = (pow(5, 0.5) - 1) / 2.;
+		solution a[2], b[2], c[2], d[2];
+		matrix tmp(1, new double[1]{ 0 });
+		for(int j = 0 ; j < 2; j++){
+			a[j].x = tmp;
+			b[j].x = tmp;
+			c[j].x = tmp;
+			d[j].x = tmp;
+		}
+		
+		b[0].x = b;
+		c[0].x = b[0].x - alfa * (b[0].x - a[0].x);
+		d[0].x = a[0].x + alfa * (b[0].x - a[0].x);
+		a[0].fit_fun(ff, ud1, ud2);
+		b[0].fit_fun(ff, ud1, ud2);
+		c[0].fit_fun(ff, ud1, ud2);
+		d[0].fit_fun(ff, ud1, ud2);
+		do {
+			if(c[0].y < d[0].y) {
+				a[1].x = a[0].x;
+				b[1].x = d[0].x;
+				c[1].x = b[1].x - alfa * (b[1].x - a[1].x);
+				d[1].x = c[0];
+				a[1].fit_fun(ff, ud1, ud2);
+				b[1].fit_fun(ff, ud1, ud2);
+				c[1].fit_fun(ff, ud1, ud2);
+				d[1].fit_fun(ff, ud1, ud2);
+			}
+			else {
+				a[1].x = c[0].x;
+				b[1].x = b[0].x;
+				c[1].x = d[0].x;
+				d[1].x = a[1].x + alfa * (b[1].x - a[1].x);
+				a[1].fit_fun(ff, ud1, ud2);
+				b[1].fit_fun(ff, ud1, ud2);
+				c[1].fit_fun(ff, ud1, ud2);
+				d[1].fit_fun(ff, ud1, ud2);
+			}
+			a[0] = a[1];
+			b[0] = b[1];
+			c[0] = c[1];
+			d[0] = d[1];
+			i++;
+			if (solution:f_calls > Nmax) throw("error: przekroczono nmax");
+		} while (b[0].y - a[0].y < epsilon);
+		
+		Xopt.x = (a[0].x + b[0].x) / 2;
+		Xopt.fit_fun(ff, ud1, ud2);
 		return Xopt;
 	}
 	catch (string ex_info)
