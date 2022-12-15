@@ -9,6 +9,9 @@ Akademia Górniczo-Hutnicza
 
 #include"opt_alg.h"
 #include <fstream>
+#include <cstdlib>
+#include <cstdio>
+#include <ctime>
 
 void lab1();
 void lab2();
@@ -160,22 +163,42 @@ void lab2()
 	//matrix x(2, new double[2]{ 3.8457,4.83594 });
 	//matrix wynik = fR_lab2(x, 0, 0);
 	//cout << wynik << endl;
- 
 }
 
 void lab3()
 {
-	matrix chuj(2, new double[2]{ 1, 1 });
-	//matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double alpha, double beta, double gamma, double delta, double epsilon, int Nmax, matrix ud1, matrix ud2
-	//solution chujSolution = sym_NM(f3, chuj, 3, 1, 0.5, 2, 0.5, 0.01, 1000);
-	//	cout << "x1 = " << chujSolution.x(0) << "\tx2 = " << chujSolution.x(1) << "\ty = " << chujSolution.y << endl;
+	////testy:
+	//matrix naszMatrix(2, new double[2]{ 1, 1 });
+	////matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double alpha, double beta, double gamma, double delta, double epsilon, int Nmax, matrix ud1, matrix ud2
+	////solution naszSolution = sym_NM(f3, naszMatrix, 3, 1, 0.5, 2, 0.5, 0.01, 1000);
+	////	cout << "x1 = " << naszSolution.x(0) << "\tx2 = " << naszSolution.x(1) << "\ty = " << naszSolution.y << endl;
 
-	//matrix(*ff)(matrix, matrix, matrix), matrix x0, double c, double dc, double epsilon, int Nmax, matrix ud1, matrix ud2
+	////matrix(*ff)(matrix, matrix, matrix), matrix x0, double c, double dc, double epsilon, int Nmax, matrix ud1, matrix ud2
 
-	cout << "\n\n\n\n\n";
+	////cout << "\n\n\n\n\n";
 
-	solution penior = pen(f3, chuj, 3, 2, 0.01, 1000);
-	cout << "x1 = " << penior.x(0) << "\tx2 = " << penior.x(1) << "\ty = " << penior.y << endl;
+	//solution penior = pen(f3, naszMatrix, 3, 2, 0.01, 1000);
+	//cout << "x1 = " << penior.x(0) << "\tx2 = " << penior.x(1) << "\ty = " << penior.y << endl;
+
+	srand(time(NULL));
+	double x1[100];
+	double x2[100];
+	for (int i = 0; i < 100; i++) {
+
+		x1[i] = 5. * ((double)rand() / (double)RAND_MAX) + 1; //od 1 do 6
+		x2[i] = 5. * ((double)rand() / (double)RAND_MAX) + 1;
+		cout << "x1(0) = " << x1[i] << "\tx2(0) = " << x2[i] << endl;
+
+		double pom[] = { x1[i],x2[i] };
+		matrix x0(2, pom);
+		solution penalty = pen(f3, x0, 3, 2, 0.01, 1000);
+		cout << "x1(0)" << x1[i] <<"\tx2(0) = " << x2[i] << "\tx1 = " << penalty.x(0) << "\tx2 = " << penalty.x(1) << "\tr = " << obliczOdleglosc(penalty.x(0), penalty.x(1), penalty.y(0)) << "\ty = " << penalty.y(0) << " " << penalty.f_calls << endl;
+		//cout << x1[i] <<"\t" << x2[i] << "\t" << penalty.x(0) << "\t" << penalty.x(1) << "\t" << obliczOdleglosc(penalty.x(0), penalty.x(1), penalty.y(0)) << "\t" << penalty.y(0) << "\t" << penalty.f_calls << endl;
+		solution::f_calls = 0;
+	}
+	//problem rzeczywisty:
+
+
 }
 
 void lab4()

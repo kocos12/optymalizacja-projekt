@@ -402,7 +402,7 @@ solution pen(matrix(*ff)(matrix, matrix, matrix), matrix x0, double c, double dc
 			OldX = Fx.x;
 			Fx = sym_NM(f3, Fx.x, 3, 1, 0.5, 2, 0.5, 0.01, 1000);
 			c = dc * c;
-			cout <<"tu jest pen: " <<Fx.x << endl;
+			//cout <<"tu jest pen: " <<Fx.x << endl;
 			if (solution::f_calls > Nmax) {
 				throw ("Error");
 			}
@@ -457,9 +457,9 @@ solution sym_NM(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double
 		do {
 			for(int i = 0; i < 3; i++){
 				p[i].fit_fun(ff, ud1, ud2);
-				cout << p[i].y << "\t";
+				//cout << p[i].y << "\t";
 			}
-			cout << endl;
+			//cout << endl;
 
 			i_Max = 0;
 			i_Min = 0;
@@ -524,7 +524,7 @@ solution sym_NM(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double
 				throw ("Error");
 			}
 
-			if (k > 20) break;
+			//if (k > 10) break;
 
 			//cout << "iteracja nr. " << k << endl;
 			//k++;
@@ -543,7 +543,7 @@ solution sym_NM(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double
 				tmp_w2_tmp = p[i_Min].x - p[2].x;
 				tmp_w2 = norm(tmp_w2_tmp);
 			}
-			else tmp_w2 = -10000;
+			else tmp_w2 = -100000;
 
 			
 			tmpMax = max(temp2, tmp_w1);

@@ -12,6 +12,11 @@ matrix fR_lab2(matrix x, matrix ud1, matrix ud2);
 matrix df_lab2(double t, matrix Y, matrix ud1, matrix ud2);
 
 matrix f3(matrix x, matrix ud1, matrix ud2);
+matrix df3(double t, matrix y, matrix ud1, matrix ud2);
+matrix fTa(matrix x, matrix ud1, matrix ud2);
+matrix fR3(matrix x, matrix ud1, matrix ud2);
+double obliczOdleglosc(double x, double y, double z);
+
 
 matrix f4(matrix x, matrix ud1, matrix ud2);
 matrix gf1(matrix x, matrix ud1, matrix ud2);

@@ -2,6 +2,8 @@
 #include <cmath>
 #include <algorithm>
 
+#define M_PI 3.141592
+
 using namespace std;
 
 matrix f1(matrix x, matrix ud1, matrix ud2) {
@@ -165,4 +167,68 @@ double wewS(matrix x){
 	suma += 1 / m2d(g3(x,a));
 
 	return (-1) * suma;
+}
+
+matrix df3(double t, matrix y, matrix ud1, matrix ud2)
+{
+	double c = 0.47;
+	double r = 0.12;
+	double m = 0.6;
+	double ro = 1.2;
+	double g = 9.81;
+
+	double s = M_PI * r * r;
+	double Dx = 0.5 * c * ro * s * abs(y(1)) * y(1);
+	double Dy = 0.5 * c * ro * s * abs(y(3)) * y(3);
+	double Fmx = 3.14 * ro * y(3) + m2d(ud2) * pow(r, 3);
+	double Fmy = 3.14 * ro * y(1) + m2d(ud2) * pow(r, 3);
+
+	matrix dY;
+
+	dY(0) = y(1);
+	dY(1) = (-1 * Dy - Fmx) / m;
+	dY(2) = y(3);
+	dY(3) = (-1 * m * g - Dy - Fmy) / m;
+
+	return dY;
+}
+
+matrix fTa(matrix x, matrix ud1, matrix ud2)
+{
+	double arg = 3.14 + sqrt(pow(x(0) / M_PI, 2) + pow(x(1) / M_PI, 2));
+	matrix y = sin(arg) / arg;
+
+	if ((-1) * x(0) + 1 > 0)
+		y = y + ud2 * pow((-1) * x(0) + 1, 2);
+
+	if ((-1) * x(0) + 1 > 0)
+		y = y + ud2 + pow((-1) * x(0) + 1, 2);
+
+	if(norm(x) - ud1 > 0)
+		y = y + ud2 * pow(norm(x) - ud1, 2);
+
+	return y;
+}
+
+matrix fR3(matrix x, matrix ud1, matrix ud2) {
+	matrix y;
+	matrix Y0(4, new double[4]{ 0, x(0),100,0 });
+	matrix* Y = solve_ode(df3, 0, 0.01, 7, Y0, ud1, x(1));
+	int n = get_len(Y[0]);
+	int i50 = 0;
+	int i0 = 0;
+	for (int i = 0; i < n; i++) {
+		if (abs(Y[1](i, 2) - 50) < abs(Y[1](i50, 2) - 50)) i50 = i;
+		if (abs(Y[1](i, 2)) < abs(Y[1](i0, 2))) i0 = i;
+	}
+	y = -Y[1](i0, 0);
+	if (abs(x(0)) - 10 > 0) y = y + (ud2 * pow(abs(x(0)) - 10, 2));
+	if (abs(x(1)) - 25 > 0) y = y + (ud2 * pow(abs(x(1)) - 25, 2));
+	if (abs(Y[1](i50, 0) - 5) - 1 > 0) y = y + (ud2 * pow(abs(Y[1](i50, 0) - 5) - 1, 2));
+	return y;
+}
+
+
+double obliczOdleglosc(double x, double y, double z) {
+	return sqrt(pow(x - 0, 2) + pow(y - 0, 2) + pow(z - 0, 2));
 }
