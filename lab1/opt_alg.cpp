@@ -385,7 +385,7 @@ solution Rosen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix s0, double
 	}
 }
 
-solution pen(matrix(*ff)(matrix, matrix, matrix), matrix x0, double c, double dc, double epsilon, int Nmax, matrix ud1, matrix ud2)
+solution pen1(matrix(*ff)(matrix, matrix, matrix), matrix x0, double c, double dc, double epsilon, int Nmax, matrix ud1, matrix ud2)
 {
 	try {
 		solution Xopt;
@@ -398,15 +398,49 @@ solution pen(matrix(*ff)(matrix, matrix, matrix), matrix x0, double c, double dc
 		do {
 			i++;
 			temp(0) = c * zewS(Fx.x);
-			Fx.y = Fx.fit_fun(ff, ud1, ud2) + temp;
+			Fx.y = Fx.fit_fun(ff, ud1, c) + temp;
 			OldX = Fx.x;
-			Fx = sym_NM(f3, Fx.x, 3, 1, 0.5, 2, 0.5, 0.01, 1000);
+			//Fx = sym_NM(f3, Fx.x, 3, 1, 0.5, 2, 0.5, 0.01, 1000);
+			Fx = HJ(fR3, Fx.x, 0.5, 0.5, 0.01, 1000, ud1, c);
 			c = dc * c;
 			//cout <<"tu jest pen: " <<Fx.x << endl;
 			if (solution::f_calls > Nmax) {
 				throw ("Error");
 			}
 		} while(norm(Fx.x - OldX) > epsilon);
+
+		Xopt = Fx;
+
+		return Xopt;
+	}
+	catch (string ex_info)
+	{
+		throw ("solution pen(...):\n" + ex_info);
+	}
+}
+solution pen2(matrix(*ff)(matrix, matrix, matrix), matrix x0, double c, double dc, double epsilon, int Nmax, matrix ud1, matrix ud2)
+{
+	try {
+		solution Xopt;
+		solution Fx;
+		Fx.x = x0;
+		matrix OldX(0);
+		matrix temp(0);
+		//Tu wpisz kod funkcji
+		int i = 0;
+		do {
+			i++;
+			temp(0) = c * wewS(Fx.x);
+			Fx.y = Fx.fit_fun(ff, ud1, ud2) + temp;
+			OldX = Fx.x;
+			//Fx = sym_NM(f3, Fx.x, 3, 1, 0.5, 2, 0.5, 0.01, 1000);
+			Fx = HJ(f3, Fx.x, 0.5, 0.5, 0.01, 1000, ud1, ud2);
+			c = dc * c;
+			//cout <<"tu jest pen: " <<Fx.x << endl;
+			if (solution::f_calls > Nmax) {
+				throw ("Error");
+			}
+		} while (norm(Fx.x - OldX) > epsilon);
 
 		Xopt = Fx;
 

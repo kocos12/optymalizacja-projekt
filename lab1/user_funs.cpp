@@ -140,7 +140,7 @@ matrix g3(matrix x, double a) {
 double zewS(matrix x)
 {
 	double suma = 0;
-	double a = 4;
+	double a = 5;
 
 	if (0 < m2d(g1(x)))
 	{
@@ -161,7 +161,7 @@ double zewS(matrix x)
 
 double wewS(matrix x){
 	double suma = 0;
-	double a = 4;
+	double a = 5;
 	suma += 1 / m2d(g1(x));
 	suma += 1 / m2d(g2(x));
 	suma += 1 / m2d(g3(x,a));

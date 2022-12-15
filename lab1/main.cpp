@@ -180,24 +180,39 @@ void lab3()
 	//solution penior = pen(f3, naszMatrix, 3, 2, 0.01, 1000);
 	//cout << "x1 = " << penior.x(0) << "\tx2 = " << penior.x(1) << "\ty = " << penior.y << endl;
 
+	//funkcja testowa:
 	srand(time(NULL));
-	double x1[100];
-	double x2[100];
-	for (int i = 0; i < 100; i++) {
+	//double x1[100] = {};
+	//double x2[100] = {};
+	//for (int i = 0; i < 100; i++) {
 
-		x1[i] = 5. * ((double)rand() / (double)RAND_MAX) + 1; //od 1 do 6
-		x2[i] = 5. * ((double)rand() / (double)RAND_MAX) + 1;
-		cout << "x1(0) = " << x1[i] << "\tx2(0) = " << x2[i] << endl;
+	//	x1[i] = 5. * ((double)rand() / (double)RAND_MAX) + 1; //od 1 do 6
+	//	x2[i] = 5. * ((double)rand() / (double)RAND_MAX) + 1;
+	//	//cout << "x1(0) = " << x1[i] << "\tx2(0) = " << x2[i] << endl;
 
-		double pom[] = { x1[i],x2[i] };
-		matrix x0(2, pom);
-		solution penalty = pen(f3, x0, 3, 2, 0.01, 1000);
-		cout << "x1(0)" << x1[i] <<"\tx2(0) = " << x2[i] << "\tx1 = " << penalty.x(0) << "\tx2 = " << penalty.x(1) << "\tr = " << obliczOdleglosc(penalty.x(0), penalty.x(1), penalty.y(0)) << "\ty = " << penalty.y(0) << " " << penalty.f_calls << endl;
-		//cout << x1[i] <<"\t" << x2[i] << "\t" << penalty.x(0) << "\t" << penalty.x(1) << "\t" << obliczOdleglosc(penalty.x(0), penalty.x(1), penalty.y(0)) << "\t" << penalty.y(0) << "\t" << penalty.f_calls << endl;
-		solution::f_calls = 0;
-	}
+	//	double pom[] = { x1[i],x2[i] };
+	//	matrix x0(2, pom);
+
+	//	solution penalty1 = pen1(f3, x0, 3, 2, 0.01, 1000);
+	//	cout << pom[0] << " " << pom[1] << " " << penalty1.x(0) << " " << penalty1.x(1) << " " << obliczOdleglosc(penalty1.x(0), penalty1.x(1), penalty1.y(0)) << " " << penalty1.y << " " << penalty1.f_calls << " ";
+	//	solution::f_calls = 0;
+
+	//	solution penalty2 = pen2(f3, x0, 3, 2, 0.01, 1000);
+	//	cout << penalty2.x(0) << " " << penalty2.x(1) << " " << obliczOdleglosc(penalty2.x(0), penalty2.x(1), penalty2.y(0)) << " " << penalty2.y << " " << penalty2.f_calls << endl;
+	//	solution::f_calls = 0;
+
+	//	//cout << "x1(0)" << x1[i] <<"\tx2(0) = " << x2[i] << "\tx1 = " << penalty.x(0) << "\tx2 = " << penalty.x(1) << "\tr = " << obliczOdleglosc(penalty.x(0), penalty.x(1), penalty.y(0)) << "\ty = " << penalty.y(0) << "\t" << penalty.f_calls << endl;
+	//	//cout << x1[i] <<"\t" << x2[i] << "\t" << penalty.x(0) << "\t" << penalty.x(1) << "\t" << obliczOdleglosc(penalty.x(0), penalty.x(1), penalty.y(0)) << "\t" << penalty.y(0) << "\t" << penalty.f_calls << endl;
+	//	
+	//}
+	// 
 	//problem rzeczywisty:
+	double pom[] = { 0,0 };
+	matrix x0(2, pom);
 
+	solution penalty1 = pen1(fR3, x0, 3, 2, 0.01, 1000, NULL, 0.);
+	cout << pom[0] << " " << pom[1] << " " << penalty1.x(0) << " " << penalty1.x(1) << " "  << penalty1.y << " " << penalty1.f_calls << " ";
+	solution::f_calls = 0;
 
 }
 
