@@ -165,9 +165,17 @@ void lab2()
 
 void lab3()
 {
-	matrix chuj(2, new double[2]{ 0, 0 });
-	solution chujSolution = sym_NM(f3, chuj, 3, 1, 0.5, 2, 0.5, 0.01, 1000);
-		cout << "x1 = " << chujSolution.x(0) << "\tx2 = " << chujSolution.x(1) << "\ty = " << chujSolution.y << endl;
+	matrix chuj(2, new double[2]{ 1, 1 });
+	//matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double alpha, double beta, double gamma, double delta, double epsilon, int Nmax, matrix ud1, matrix ud2
+	//solution chujSolution = sym_NM(f3, chuj, 3, 1, 0.5, 2, 0.5, 0.01, 1000);
+	//	cout << "x1 = " << chujSolution.x(0) << "\tx2 = " << chujSolution.x(1) << "\ty = " << chujSolution.y << endl;
+
+	//matrix(*ff)(matrix, matrix, matrix), matrix x0, double c, double dc, double epsilon, int Nmax, matrix ud1, matrix ud2
+
+	cout << "\n\n\n\n\n";
+
+	solution penior = pen(f3, chuj, 3, 2, 0.01, 1000);
+	cout << "x1 = " << penior.x(0) << "\tx2 = " << penior.x(1) << "\ty = " << penior.y << endl;
 }
 
 void lab4()

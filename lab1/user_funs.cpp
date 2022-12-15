@@ -1,6 +1,8 @@
 #include"user_funs.h"
 #include <cmath>
+#include <algorithm>
 
+using namespace std;
 
 matrix f1(matrix x, matrix ud1, matrix ud2) {
 	matrix y;
@@ -102,8 +104,8 @@ matrix df_lab2(double t, matrix Y, matrix ud1, matrix ud2) {
 matrix f3(matrix x, matrix ud1, matrix ud2)
 {
 	double pi = 3.141592;
-	return pow((x(0) - 2), 2) + pow((x(1) - 3), 2);
-	//return (sin(pi * sqrt((x(0) / pi) * (x(0) / pi) + (x(1) / pi) * (x(1) / pi)))) / (pi * sqrt(pow(x(0) / pi, 2) + pow(x(1) / pi, 2)));
+	//return pow((x(0) - 2), 2) + pow((x(1) - 3), 2);
+	return (sin(pi * sqrt((x(0) / pi) * (x(0) / pi) + (x(1) / pi) * (x(1) / pi)))) / (pi * sqrt(pow(x(0) / pi, 2) + pow(x(1) / pi, 2)));
 }
 
 matrix f4(matrix x, matrix ud1, matrix ud2)
@@ -116,4 +118,51 @@ matrix gf1(matrix x, matrix ud1, matrix ud2) {
 	g(0) = 10 * x(0) + 8 * x(1) - 34;
 	g(1) = 8 * x(0) + 10 * x(1) - 38;
 	return g;
+}
+
+
+matrix g1(matrix x)
+{
+	return ( -1 * x(0) + 1);
+}
+
+
+matrix g2(matrix x) {
+	return -1 * x(0) + 1;
+}
+
+matrix g3(matrix x, double a) {
+	return sqrt(pow(x(0), 2) + pow(x(1), 2)) - a;
+}
+
+double zewS(matrix x)
+{
+	double suma = 0;
+	double a = 4;
+
+	if (0 < m2d(g1(x)))
+	{
+		suma += pow(m2d(g1(x)), 2);
+	}
+
+	if(0 < m2d(g2(x))){
+		suma +=  pow(m2d(g2(x)), 2);
+	}
+	
+	if (0 < m2d(g3(x,a)))
+	{
+		suma += pow(m2d(g3(x,a)), 2);
+	}
+
+	return suma;
+}
+
+double wewS(matrix x){
+	double suma = 0;
+	double a = 4;
+	suma += 1 / m2d(g1(x));
+	suma += 1 / m2d(g2(x));
+	suma += 1 / m2d(g3(x,a));
+
+	return (-1) * suma;
 }
