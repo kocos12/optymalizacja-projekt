@@ -213,7 +213,8 @@ matrix fTa(matrix x, matrix ud1, matrix ud2)
 matrix fR3(matrix x, matrix ud1, matrix ud2) {
 	matrix y;
 	matrix Y0(4, new double[4]{ 0, x(0),100,0 });
-	matrix* Y = solve_ode(df3, 0, 0.01, 7, Y0, ud1, x(1));
+	matrx ud(2, new double[2]{ -2.,13.5 });
+	matrix* Y = solve_ode(df3, 0, 0.01, 7, Y0, ud1, ud);
 	int n = get_len(Y[0]);
 	int i50 = 0;
 	int i0 = 0;

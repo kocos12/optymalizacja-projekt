@@ -595,42 +595,29 @@ solution sym_NM(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double
 	}
 }
 
-//solution SD(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix, matrix), matrix x0, double h0, double epsilon, int Nmax, matrix ud1, matrix ud2)
-//{
-//	try
-//	{
-//		solution Xopt;
-//		//Tu wpisz kod funkcji
-//		int i = 0;
-//		int n = get_len(x0);
-//		solution X0, X1;
-//		matrix P(2, new double[2]{ n, 2 }), d;
-//		double* ab_db;
-//		matrix ab(2, new double[2]{ 0,0 });
-//		soultion x[2], h;
-//		x[0] = x0;
-//		
-//		do {
-//			d = -1. * gf(x[0], ud1, ud2);
-//			P.set_col(x0, 0);
-//			P.set_col(d, 1);
-//			ab_db = expansion(ff, x(0), d(0), 1.5, Nmax, ud1, ud2);
-//			ab[0] = ab_db[0];
-//			ab[1] = ab_db[1];
-//
-//			i++;
-//			if (solution::f_calls > Nmax) {
-//				throw ("Error");
-//			}
-//		} while ();
-//
-//		return Xopt;
-//	}
-//	catch (string ex_info)
-//	{
-//		throw ("solution SD(...):\n" + ex_info);
-//	}
-//}
+solution SD(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix, matrix), matrix x0, double h0, double epsilon, int Nmax, matrix ud1, matrix ud2)
+{
+	try
+	{
+		solution Xopt;
+		//Tu wpisz kod funkcji
+		int i = 0;
+		int n = get_len(x0);
+		solution X0, X1, h;
+		X0.x = x0;
+		matrix P(2, new double[2]{ n, 2 });
+		matrix d(2, new double[2]{ n, 1 });
+		double* ab;
+
+		//while(true)
+
+		return Xopt;
+	}
+	catch (string ex_info)
+	{
+		throw ("solution SD(...):\n" + ex_info);
+	}
+}
 
 solution CG(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix, matrix), matrix x0, double h0, double epsilon, int Nmax, matrix ud1, matrix ud2)
 {
