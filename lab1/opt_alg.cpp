@@ -605,8 +605,8 @@ solution SD(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix, mat
 		int n = get_len(x0);
 		solution X0, X1, h;
 		X0.x = x0;
-		matrix P(2, new double[2]{ n, 2 });
-		matrix d(2, new double[2]{ n, 1 });
+		//matrix P(2, new double[2]{ n, 2 });
+		//matrix d(2, new double[2]{ n, 1 });
 		double* ab;
 
 		//while(true)

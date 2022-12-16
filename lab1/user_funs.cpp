@@ -140,7 +140,7 @@ matrix g3(matrix x, double a) {
 double zewS(matrix x)
 {
 	double suma = 0;
-	double a = 5;
+	double a = 4;
 
 	if (0 < m2d(g1(x)))
 	{
@@ -189,7 +189,7 @@ matrix df3(double t, matrix y, matrix ud1, matrix ud2)
 	dY(1) = (-1 * Dy - Fmx) / m;
 	dY(2) = y(3);
 	dY(3) = (-1 * m * g - Dy - Fmy) / m;
-
+	std::cout << t << "\t" << y(0) << "\t" << y(2) << std::endl;
 	return dY;
 }
 
@@ -213,8 +213,9 @@ matrix fTa(matrix x, matrix ud1, matrix ud2)
 matrix fR3(matrix x, matrix ud1, matrix ud2) {
 	matrix y;
 	matrix Y0(4, new double[4]{ 0, x(0),100,0 });
-	matrx ud(2, new double[2]{ -2.,13.5 });
-	matrix* Y = solve_ode(df3, 0, 0.01, 7, Y0, ud1, ud);
+	matrix* Y = solve_ode(df3, 0, 0.01, 7, Y0, ud1, x(1));	//solve_ode(ff, t0, dt, tend, Y0 ,ud1, ud2 )
+	//cout << *Y << endl;
+	//std::cout << "\t" << (*Y)(0) << "\t" << (*Y)(2) << std::endl;
 	int n = get_len(Y[0]);
 	int i50 = 0;
 	int i0 = 0;
@@ -226,6 +227,10 @@ matrix fR3(matrix x, matrix ud1, matrix ud2) {
 	if (abs(x(0)) - 10 > 0) y = y + (ud2 * pow(abs(x(0)) - 10, 2));
 	if (abs(x(1)) - 25 > 0) y = y + (ud2 * pow(abs(x(1)) - 25, 2));
 	if (abs(Y[1](i50, 0) - 5) - 1 > 0) y = y + (ud2 * pow(abs(Y[1](i50, 0) - 5) - 1, 2));
+
+
+	//std::cout << y(0) << std::endl;
+
 	return y;
 }
 
