@@ -183,7 +183,7 @@ matrix df3(double t, matrix y, matrix ud1, matrix ud2)
 	double Fmx = 3.14 * ro * y(3) + m2d(ud2) * pow(r, 3);
 	double Fmy = 3.14 * ro * y(1) + m2d(ud2) * pow(r, 3);
 
-	matrix dY;
+	matrix dY(4,1);
 
 	dY(0) = y(1);
 	dY(1) = (-1 * Dy - Fmx) / m;

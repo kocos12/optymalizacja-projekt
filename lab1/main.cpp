@@ -210,7 +210,7 @@ void lab3()
 	double pom[] = { 0,0 };
 	matrix x0(2, pom);
 
-	solution penalty1 = pen1(fR3, x0, 3, 2, 0.01, 1000, NULL, 0.);
+	solution penalty1 = pen1(fR3, x0, 1, 2, 0.0001, 10000);
 	cout << pom[0] << " " << pom[1] << " " << penalty1.x(0) << " " << penalty1.x(1) << " "  << penalty1.y << " " << penalty1.f_calls << " ";
 	solution::f_calls = 0;
 
