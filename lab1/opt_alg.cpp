@@ -60,6 +60,73 @@ double* expansion(matrix(*ff)(matrix, matrix, matrix), double x0, double d, doub
 	}
 }
 
+double* expansion2(matrix(*ff)(matrix, matrix, matrix), double x0, double d, double alpha, int Nmax, matrix ud1, matrix ud2)
+{
+	try
+	{
+		double* p = new double[2] { 0, 0 };
+		//Tu wpisz kod funkcji
+		int i = 0;
+		solution X0, X1, X[3]; //X{ i - 1 ; i ; i + 1 }
+
+		for (int j = 0; j < 3; j ++) {
+			matrix tmp(0.);	
+			X[j].x = tmp;
+			X[j].fit_fun(ff,ud1,ud2);
+		}
+
+		matrix mx0(x0);
+		X0.x = mx0;
+		X1.x = X0.x + d;
+		X0.fit_fun(ff, ud1, ud2);
+		X1.fit_fun(ff, ud1, ud2);
+
+		if (X1.y == X0.y) {
+			p[0] = X1.x(0);
+			p[1] = X0.x(0) - d;
+			return p;
+		}
+
+		if (X1.y > X0.y){
+			d = -d;
+			X1.x = X0.x + d;
+			X0.fit_fun(ff, ud1, ud2);
+			X1.fit_fun(ff, ud1, ud2);
+
+			if (X1.y >= X0.y) {
+				p[0] = X1.x(0);
+				p[1] = X0.x(0) - d;
+				return p;
+			}
+		}
+
+		do {
+			if (solution::f_calls > Nmax) {
+				throw ("Error");
+			}
+			i++;
+			X[0] = X[1];
+			X[1] = X[2];
+			X[2].x = X0.x + pow(alpha, i) * d;
+			X[2].fit_fun(ff, ud1, ud2);
+		} while (X[1].y <= X[2].y);
+
+		if (d > 0) {
+			p[0] = X[0].x(0);
+			p[1] = X[2].x(0);
+		}
+		else {
+			p[0] = X[2].x(0);
+			p[1] = X[0].x(0);
+		}
+
+		return p;
+	}
+	catch (string ex_info)
+	{
+		throw ("double* expansion(...):\n" + ex_info);
+	}
+}
 solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, double epsilon, matrix ud1, matrix ud2)
 {
 	try
@@ -254,7 +321,6 @@ solution HJ(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double alp
 		throw ("solution HJ(...):\n" + ex_info);
 	}
 }
-
 
 solution probuj(matrix(*ff)(matrix, matrix, matrix),solution xB, double s, matrix ud1, matrix ud2) {
 	int n = get_dim(xB);
@@ -605,12 +671,38 @@ solution SD(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix, mat
 		int n = get_len(x0);
 		solution X0, X1, h;
 		X0.x = x0;
-		//matrix P(2, new double[2]{ n, 2 });
-		//matrix d(2, new double[2]{ n, 1 });
+		matrix P(n, 2);
+		matrix d(n, 1);
 		double* ab;
 
-		//while(true)
+		while(true) {
+			//cout << "licznik iteracji i: " << i << endl;
+			d = -X0.grad(gf, ud1, ud2);
+			if (h0 < 0)
+			{
+				P.set_col(X0.x, 0);
+				P.set_col(d, 1);
+				ab = expansion2(ff, 0, 1, 1.2, Nmax, ud1, P);
+				h = golden(ff, ab[0], ab[1], epsilon, Nmax, ud1, P);
+				X1.x = X0.x + h.x * d;
+			}
+			else {
+				X1.x = X0.x + h0 * d;
+			}
+			if (norm(X0.x - X1.x) < epsilon) {
+				Xopt = X1;
+				break;
+			}
 
+			if (solution::f_calls > Nmax) {
+				throw ("Error: przekroczono Nmax w SD\n");
+				break;
+			}
+			
+			i++;
+			X0 = X1;
+		}
+		Xopt.fit_fun(ff, ud1, ud2);
 		return Xopt;
 	}
 	catch (string ex_info)
@@ -625,7 +717,53 @@ solution CG(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix, mat
 	{
 		solution Xopt;
 		//Tu wpisz kod funkcji
+		int i = 0;
+		int n = get_len(x0);
+		solution X0, X1, h, Xold;
+		X0.x = x0;
+		matrix P(n, 2);
+		matrix d(n, 1);
+		matrix dOld(n, 1);
+		double* ab;
+		double beta;
+		d = -X0.grad(gf, ud1, ud2);
 
+		while (true) {
+			//cout << "licznik iteracji i: " << i << endl;
+			
+			if (h0 < 0)
+			{
+				P.set_col(X0.x, 0);
+				P.set_col(d, 1);
+				ab = expansion(ff, 0, 1, 1.2, Nmax, ud1, P);
+				h = golden(ff, ab[0], ab[1], epsilon, Nmax, ud1, P);
+				X1.x = X0.x + h.x * d;
+			}
+			else {
+				X1.x = X0.x + h0 * d;
+			}
+			
+			
+
+			if (norm(X0.x - X1.x) < epsilon) {
+				Xopt = X1;
+				break;
+			}
+
+			if (solution::f_calls > Nmax) {
+				throw ("Error: przekroczono Nmax w CG\n");
+				break;
+			}
+
+			i++;
+			dOld = d;
+			Xold = X0;
+			beta = pow(norm(X1.grad(gf, ud1, ud2)), 2) / pow(norm(Xold.grad(gf, ud1, ud2)), 2);
+			d = -X1.grad(gf, ud1, ud2) + beta * dOld;
+			
+			X0 = X1;
+		}
+		Xopt.fit_fun(ff, ud1, ud2);
 		return Xopt;
 	}
 	catch (string ex_info)
@@ -641,7 +779,42 @@ solution Newton(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix,
 	{
 		solution Xopt;
 		//Tu wpisz kod funkcji
+		int i = 0;
+		int n = get_len(x0);
+		solution X0, X1, h;
+		X0.x = x0;
+		matrix P(n, 2);
+		matrix d(n, 1);
+		double* ab;
 
+		while (true) {
+			//cout << "licznik iteracji i: " << i << endl;
+			d = -inv(X0.hess(Hf, ud1, ud2)) * X0.grad(gf, ud1, ud2);
+			if (h0 < 0)
+			{
+				P.set_col(X0.x, 0);
+				P.set_col(d, 1);
+				ab = expansion(ff, 0, 1, 1.2, Nmax, ud1, P);
+				h = golden(ff, ab[0], ab[1], epsilon, Nmax, ud1, P);
+				X1.x = X0.x + h.x * d;
+			}
+			else {
+				X1.x = X0.x + h0 * d;
+			}
+			if (norm(X0.x - X1.x) < epsilon) {
+				Xopt = X1;
+				break;
+			}
+
+			if (solution::f_calls > Nmax) {
+				throw ("Error: przekroczono Nmax w Newton\n");
+				break;
+			}
+
+			i++;
+			X0 = X1;
+		}
+		Xopt.fit_fun(ff, ud1, ud2);
 		return Xopt;
 	}
 	catch (string ex_info)
@@ -650,68 +823,74 @@ solution Newton(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix,
 	}
 }
 
-//solution golden(matrix(*ff)(matrix, matrix, matrix), double a, double b, double epsilon, int Nmax, matrix ud1, matrix ud2)
-//{
-//	try
-//	{
-//		solution Xopt;
-//		//Tu wpisz kod funkcji
-//		int i = 0;
-//		double alfa = (pow(5, 0.5) - 1) / 2.;
-//		solution a[2], b[2], c[2], d[2];
-//		matrix tmp(1, new double[1]{ 0 });
-//		for(int j = 0 ; j < 2; j++){
-//			a[j].x = tmp;
-//			b[j].x = tmp;
-//			c[j].x = tmp;
-//			d[j].x = tmp;
-//		}
+solution golden(matrix(*ff)(matrix, matrix, matrix), double a, double b, double epsilon, int Nmax, matrix ud1, matrix ud2)
+{
+	try
+	{
+		solution Xopt;
+		//Tu wpisz kod funkcji
+		int i = 0;
+		double alfa = (pow(5, 0.5) - 1) / 2.;
+		matrix bb(2, new double[2] {b, 0.});
+		matrix aa(2, new double[2] {a, 0.});
+
+		solution a[2], b[2], c[2], d[2];
+		matrix tmp(2, new double[2]{ 0,0 });
+		for(int j = 0 ; j < 2; j++){
+			a[j].x = tmp;
+			b[j].x = tmp;
+			c[j].x = tmp;
+			d[j].x = tmp;
+		}
 		
-//		b[0].x = b;
-//		c[0].x = b[0].x - alfa * (b[0].x - a[0].x);
-//		d[0].x = a[0].x + alfa * (b[0].x - a[0].x);
-//		a[0].fit_fun(ff, ud1, ud2);
-//		b[0].fit_fun(ff, ud1, ud2);
-//		c[0].fit_fun(ff, ud1, ud2);
-//		d[0].fit_fun(ff, ud1, ud2);
-//		do {
-//			if(c[0].y < d[0].y) {
-//				a[1].x = a[0].x;
-//				b[1].x = d[0].x;
-//				c[1].x = b[1].x - alfa * (b[1].x - a[1].x);
-//				d[1].x = c[0];
-//				a[1].fit_fun(ff, ud1, ud2);
-//				b[1].fit_fun(ff, ud1, ud2);
-//				c[1].fit_fun(ff, ud1, ud2);
-//				d[1].fit_fun(ff, ud1, ud2);
-//			}
-//			else {
-//				a[1].x = c[0].x;
-//				b[1].x = b[0].x;
-//				c[1].x = d[0].x;
-//				d[1].x = a[1].x + alfa * (b[1].x - a[1].x);
-//				a[1].fit_fun(ff, ud1, ud2);
-//				b[1].fit_fun(ff, ud1, ud2);
-//				c[1].fit_fun(ff, ud1, ud2);
-//				d[1].fit_fun(ff, ud1, ud2);
-//			}
-//			a[0] = a[1];
-//			b[0] = b[1];
-//			c[0] = c[1];
-//			d[0] = d[1];
-//			i++;
-//			if (solution:f_calls > Nmax) throw("error: przekroczono nmax");
-//		} while (b[0].y - a[0].y < epsilon);
+		b[0].x = bb;
+		a[0].x = aa;
+		c[0].x = b[0].x - alfa * (b[0].x - a[0].x);
+		d[0].x = a[0].x + alfa * (b[0].x - a[0].x);
+		a[0].fit_fun(ff, ud1, ud2);
+		b[0].fit_fun(ff, ud1, ud2);
+		c[0].fit_fun(ff, ud1, ud2);
+		d[0].fit_fun(ff, ud1, ud2);
+		do {
+			if(c[0].y < d[0].y) {
+				a[1].x = a[0].x;
+				b[1].x = d[0].x;
+				c[1].x = b[1].x - alfa * (b[1].x - a[1].x);
+				d[1].x = c[0].x;
+
+				a[1].fit_fun(ff, ud1, ud2);
+				b[1].fit_fun(ff, ud1, ud2);
+				c[1].fit_fun(ff, ud1, ud2);
+				d[1].fit_fun(ff, ud1, ud2);
+			}
+			else {
+				a[1].x = c[0].x;
+				b[1].x = b[0].x;
+				c[1].x = d[0].x;
+				d[1].x = a[1].x + alfa * (b[1].x - a[1].x);
+
+				a[1].fit_fun(ff, ud1, ud2);
+				b[1].fit_fun(ff, ud1, ud2);
+				c[1].fit_fun(ff, ud1, ud2);
+				d[1].fit_fun(ff, ud1, ud2);
+			}
+			a[0] = a[1];
+			b[0] = b[1];
+			c[0] = c[1];
+			d[0] = d[1];
+			i++;
+			if (solution::f_calls > Nmax) throw("error: przekroczono nmax");
+		} while (b[0].y - a[0].y < epsilon);
 		
-//		Xopt.x = (a[0].x + b[0].x) / 2;
-//		Xopt.fit_fun(ff, ud1, ud2);
-//		return Xopt;
-//	}
-//	catch (string ex_info)
-//	{
-//		throw ("solution golden(...):\n" + ex_info);
-//	}
-//}
+		Xopt.x = (a[0].x + b[0].x) / 2;
+		Xopt.fit_fun(ff, ud1, ud2);
+		return Xopt;
+	}
+	catch (string ex_info)
+	{
+		throw ("solution golden(...):\n" + ex_info);
+	}
+}
 
 solution Powell(matrix(*ff)(matrix, matrix, matrix), matrix x0, double epsilon, int Nmax, matrix ud1, matrix ud2)
 {

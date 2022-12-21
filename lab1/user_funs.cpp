@@ -110,24 +110,10 @@ matrix f3(matrix x, matrix ud1, matrix ud2)
 	return (sin(pi * sqrt((x(0) / pi) * (x(0) / pi) + (x(1) / pi) * (x(1) / pi)))) / (pi * sqrt(pow(x(0) / pi, 2) + pow(x(1) / pi, 2)));
 }
 
-matrix f4(matrix x, matrix ud1, matrix ud2)
-{
-	return pow((x(0) + 2 * x(1) - 7), 2) + pow((2 * x(0) + x(1) - 5), 2);
-}
-
-matrix gf1(matrix x, matrix ud1, matrix ud2) {
-	matrix g(2, 1);
-	g(0) = 10 * x(0) + 8 * x(1) - 34;
-	g(1) = 8 * x(0) + 10 * x(1) - 38;
-	return g;
-}
-
-
 matrix g1(matrix x)
 {
 	return ( -1 * x(0) + 1);
 }
-
 
 matrix g2(matrix x) {
 	return -1 * x(0) + 1;
@@ -234,7 +220,33 @@ matrix fR3(matrix x, matrix ud1, matrix ud2) {
 	return y;
 }
 
-
 double obliczOdleglosc(double x, double y, double z) {
 	return sqrt(pow(x - 0, 2) + pow(y - 0, 2) + pow(z - 0, 2));
+}
+
+matrix f4(matrix x, matrix ud1, matrix ud2) // ud2 to P
+{
+	matrix y;
+	if (isnan(ud2(0, 0))) {
+		y = pow(x(0) + 2 * x(1) - 7, 2) + pow(2 * x(0) + x(1) - 5, 2);
+	}
+	else
+		y = f4(ud2[0] + x * ud2[1], ud1, NULL); // do sprawdzenia kiedys
+	return y;
+}
+
+matrix gf1(matrix x, matrix ud1, matrix ud2) {
+	matrix g(2, 1);
+	g(0) = 10 * x(0) + 8 * x(1) - 34;
+	g(1) = 8 * x(0) + 10 * x(1) - 38;
+	return g;
+}
+
+matrix Hf(matrix x, matrix ud1, matrix ud2) {
+	matrix H(2, 2); //hesjan
+	H(0, 0) = 10;
+	H(0, 1) = 8;
+	H(1, 0) = 8;
+	H(1, 1) = 10;
+	return H;
 }
