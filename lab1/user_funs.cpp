@@ -231,7 +231,7 @@ matrix f4(matrix x, matrix ud1, matrix ud2) // ud2 to P
 		y = pow(x(0) + 2 * x(1) - 7, 2) + pow(2 * x(0) + x(1) - 5, 2);
 	}
 	else
-		y = f4(ud2[0] + x * ud2[1], ud1, NULL); // do sprawdzenia kiedys
+		y = f4(ud2[0] + x * ud2[1], ud1, ud2); // do sprawdzenia kiedys
 	return y;
 }
 
