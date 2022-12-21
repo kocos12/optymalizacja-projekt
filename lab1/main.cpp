@@ -258,15 +258,15 @@ void lab4()
 		matrix pomMatrix(2, pom);
 		x0 = pomMatrix;
 
-		naszSolution = SD(f4, gf1, x0, h, 1, 1000);
+		naszSolution = SD(f4, gf1, x0, h, 0.01, 1000);
 		cout << x1[i] << " " << x2[i] << " " << naszSolution.x(0) << " " << naszSolution.x(1) << " " << naszSolution.y(0) << " " << solution::f_calls << " " << solution::g_calls << " ";
 		solution::clear_calls();
 
-		naszSolution = CG(f4, gf1, x0, h, 1, 1000);
+		naszSolution = CG(f4, gf1, x0, h, 0.01, 1000);
 		cout << naszSolution.x(0) << " " << naszSolution.x(1) << " " << naszSolution.y(0) << " " << solution::f_calls << " " << solution::g_calls << " ";
 		solution::clear_calls();
 
-		naszSolution = Newton(f4, gf1, Hf, x0, h, 1, 1000);
+		naszSolution = Newton(f4, gf1, Hf, x0, h, 0.01, 1000);
 		cout << naszSolution.x(0) << " " << naszSolution.x(1) << " " << naszSolution.y(0) << " " << solution::f_calls << " " << solution::g_calls << " " << solution::H_calls << endl;
 		solution::clear_calls();
 
