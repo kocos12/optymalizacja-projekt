@@ -23,35 +23,12 @@ void lab6();
 
 int main()
 {
-	//try
-	//{
-	//	lab1();
-	//}
-	//catch (string ex_info)
-	//{
-	//	cerr << "error:\n";
-	//	cerr << ex_info << endl << endl;
-	//}
-	//try
-	//{
-	//	lab2();
-	//}
-	//catch (string ex_info)
-	//{
-	//	cerr << "error:\n";
-	//	cerr << ex_info << endl << endl;
-	//} 
-	/*try
-	{
-		lab3();
-	}
-	catch (string ex_info)
-	{
-		cerr << "error:\n";
-		cerr << ex_info << endl << endl;
-	}*/
+	
 	try
 	{
+		//lab1();
+		//lab2();
+		//lab3();
 		lab4();
 	}
 	catch (string ex_info)
@@ -240,41 +217,50 @@ void lab4()
 {
 	solution naszSolution;
 	matrix x0(2, 1, -10.);
-
-	////funkcja testowa:
-	//srand(time(NULL));
-	//double x1[100] = {};
-	//double x2[100] = {};
-	//double pom[2];
-	//double h = 0.12;
-
+	ofstream out ("wyniki.txt");
+	//funkcja testowa:
+	srand(time(NULL));
+	double x1[100] = {};
+	double x2[100] = {};
+	double pom[2];
+	double h = -1;
+	
 	//for (int i = 0; i < 100; i++) {
-	//	x1[i] = (20. * ((double)rand() / (double)RAND_MAX)) - 10.; //od -10 do 10
-	//	x2[i] = (20. * ((double)rand() / (double)RAND_MAX)) - 10.;
-	//	//cout << "x1(0) = " << x1[i] << "\tx2(0) = " << x2[i] << endl;
+		//x1[i] = (20. * ((double)rand() / (double)RAND_MAX)) - 10.; //od -10 do 10
+		//x2[i] = (20. * ((double)rand() / (double)RAND_MAX)) - 10.;
+		 
+		 
 
-	//	pom[0] = x1[i];
-	//	pom[1] = x2[i];
-	//	matrix pomMatrix(2, pom);
-	//	x0 = pomMatrix;
+		//cout << "x1(0) = " << x1[i] << "\tx2(0) = " << x2[i] << endl;
 
-	//	naszSolution = SD(f4, gf1, x0, h, 0.01, 1000);
-	//	cout << x1[i] << " " << x2[i] << " " << naszSolution.x(0) << " " << naszSolution.x(1) << " " << naszSolution.y(0) << " " << solution::f_calls << " " << solution::g_calls << " ";
-	//	solution::clear_calls();
+		//pom[0] = -7.14835;
+		//pom[1] = 3.83038;
+		//matrix pomMatrix(2, pom);
+		//x0 = pomMatrix;
 
-	//	naszSolution = CG(f4, gf1, x0, h, 0.01, 1000);
-	//	cout << naszSolution.x(0) << " " << naszSolution.x(1) << " " << naszSolution.y(0) << " " << solution::f_calls << " " << solution::g_calls << " ";
-	//	solution::clear_calls();
+		//naszSolution = SD(f4, gf1, x0, h, 0.001, 1000);
+		////out << x1[i] << " " << x2[i] << " " << naszSolution.x(0) << " " << naszSolution.x(1) << " " << naszSolution.y(0) << " " << solution::f_calls << " " << solution::g_calls << " ";
+		//solution::clear_calls();
 
-	//	naszSolution = Newton(f4, gf1, Hf, x0, h, 0.01, 1000);
-	//	cout << naszSolution.x(0) << " " << naszSolution.x(1) << " " << naszSolution.y(0) << " " << solution::f_calls << " " << solution::g_calls << " " << solution::H_calls << endl;
-	//	solution::clear_calls();
+		//naszSolution = CG(f4, gf1, x0, h, 0.001, 1000);
+		//out << naszSolution.x(0) << " " << naszSolution.x(1) << " " << naszSolution.y(0) << " " << solution::f_calls << " " << solution::g_calls << " ";
+		//solution::clear_calls();
+
+		//naszSolution = Newton(f4, gf1, Hf, x0, h, 0.001, 1000);
+		//out << naszSolution.x(0) << " " << naszSolution.x(1) << " " << naszSolution.y(0) << " " << solution::f_calls << " " << solution::g_calls << " " << solution::H_calls << endl;
+	//solution::clear_calls();
 
 	//}
-	naszSolution = SD(f4, gf1, x0, 0.05, 0.0001, 1000);
-	//naszSolution = CG(f4, gf1, x0, 0.05, 0.01, 1000);
-	//naszSolution = Newton(f4, gf1, Hf, x0, 0.05, 0.01, 1000);
-	cout << naszSolution.x(0) << " " << naszSolution.x(1) << " " << naszSolution.y << " " << solution::f_calls << " " << solution::g_calls << endl;
+	//naszSolution = SD(f4, gf1, x0, -1, 0.0001, 1000);
+	//naszSolution = CG(f4, gf1, x0, -1, 0.01, 1000);
+	//naszSolution = Newton(f4, gf1, Hf, x0, -1, 0.01, 1000);
+	//cout << naszSolution.x(0) << " " << naszSolution.x(1) << " " << naszSolution.y << " " << solution::f_calls << " " << solution::g_calls << endl;
+	
+	//problem rzeczywisty
+	double pom2[3] = { 0.,0.,0. };
+	matrix teta(3, pom2);
+	naszSolution = CG(fR4, gfR1, teta, 0.01, 0.01, 1000);
+	cout << naszSolution.x(0) << " " << naszSolution.x(1) << " " << naszSolution.x(2) << " " << naszSolution.y(0) << " " << naszSolution.y(1) << " " << solution::g_calls << endl;
 }
 
 void lab5()

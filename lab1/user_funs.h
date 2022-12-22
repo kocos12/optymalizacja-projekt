@@ -21,6 +21,8 @@ double obliczOdleglosc(double x, double y, double z);
 matrix f4(matrix x, matrix ud1, matrix = NAN);
 matrix gf1(matrix x, matrix ud1, matrix ud2);
 matrix Hf(matrix x, matrix ud1, matrix ud2);
+matrix fR4(matrix x, matrix ud1, matrix ud2);
+matrix gfR1(matrix x, matrix ud1, matrix ud2);
 
 matrix g1(matrix x);
 matrix g2(matrix x);

@@ -1,6 +1,7 @@
 #include"user_funs.h"
 #include <cmath>
 #include <algorithm>
+#include <fstream>
 
 #define M_PI 3.141592
 
@@ -231,7 +232,7 @@ matrix f4(matrix x, matrix ud1, matrix ud2) // ud2 to P
 		y = pow(x(0) + 2 * x(1) - 7, 2) + pow(2 * x(0) + x(1) - 5, 2);
 	}
 	else
-		y = f4(ud2[0] + x * ud2[1], ud1); // do sprawdzenia kiedys
+		y = f4(ud2[0] + x * ud2[1], ud1); 
 	return y;
 }
 
@@ -251,6 +252,80 @@ matrix Hf(matrix x, matrix ud1, matrix ud2) {
 	return H;
 }
 
+matrix fR4(matrix x, matrix ud1, matrix ud2) {
+	matrix y;
+	int m = 100;
+	int n = get_len(x);
+	cout << "wartosc n w FR : " << n << endl;
+	static matrix X(n, m), Y(1, m);
+	ifstream inputX("XData.txt");
+	ifstream inputY("YData.txt");
+	for (int i = 0; i < m; i++) {
+		inputX >> X(0, i);
+		inputY >> Y(0, i);
+	}
+	for (int i = 0; i < m; i++) {
+		inputX >> X(1, i);
+	}
+	for (int i = 0; i < m; i++) {
+		inputX >> X(2, i);
+	}
+	double h;
+	y = 0;
+	double P = 0;
+
+	for(int i =0;i<m;i++){
+		std::cout << "iteracja nr. " << i << " w FR" << std::endl;
+		if(i==99) {
+			std::cout << "break tutaj\n";
+		}
+		h = m2d(trans(x) * X[i]);
+		h = 1. / (1. + exp(-h));
+		y = y - (Y(0, i) * log(h)) - ((1 - Y(0, i)) * log(1 - h));
+		if (Y(0, i) == h) P++;
+	}
+	matrix m_matrix(100.);
+	P = P / 100.;
+	y = y / m_matrix;
+	matrix P_matrix(P);
+	y.add_row(P_matrix);
+
+	return y;
+
+}
+
+matrix gfR1(matrix x, matrix ud1, matrix ud2) {
+	int n = get_len(x);
+	cout << "wartosc n w grad FR : " << n << endl;
+	matrix y;
+	int m = 100;
+	static matrix X(n, m), Y(1, m);
+	ifstream inputX("XData.txt");
+	ifstream inputY("YData.txt");
+	for (int i = 0; i < m; i++) {
+		inputX >> X(0, i);
+		inputY >> Y(0, i);
+	}
+	for (int i = 0; i < m; i++) {
+		inputX >> X(1, i);
+	}
+	for (int i = 0; i < m; i++) {
+		inputX >> X(2, i);
+	}
+	double h;
+	y = 0;
+	matrix g(n, 1);
+	for(int i = 0; i < m; i++){
+		h = m2d(trans(x) * X[i]);
+		h = 1. / (1. + exp(-h));
+		g(0) = log(h) - (1 - Y(0, i)) * x(0);
+		g(1) = log(h) - (1 - Y(0, i)) * x(1);
+		g(2) = log(h) - (1 - Y(0, i)) * x(2);
+	}
+	matrix m_matrix(100.);
+	g = g / m_matrix;
+	return g;
+}
 
 matrix f5(matrix x, matrix ud1, matrix ud2)
 {

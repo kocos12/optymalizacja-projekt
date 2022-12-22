@@ -109,7 +109,7 @@ double* expansion2(matrix(*ff)(matrix, matrix, matrix), double x0, double d, dou
 			X[1] = X[2];
 			X[2].x = X0.x + pow(alpha, i) * d;
 			X[2].fit_fun(ff, ud1, ud2);
-		} while (X[1].y <= X[2].y);
+		} while (X[1].y <= X[2].y || i < 2);
 
 		if (d > 0) {
 			p[0] = X[0].x(0);
@@ -685,12 +685,16 @@ solution SD(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix, mat
 				ab = expansion2(ff, 0, 1, 1.2, Nmax, ud1, P);
 				h = golden(ff, ab[0], ab[1], epsilon, Nmax, ud1, P);
 				X1.x = X0.x + h.x * d;
+
+				cout << X1.x(0) << " " << X1.x(1) << endl;
+				
 			}
 			else {
 				X1.x = X0.x + h0 * d;
 			}
 			if (norm(X0.x - X1.x) < epsilon) {
 				Xopt = X1;
+				//cout << "Jeste tu";
 				break;
 			}
 
@@ -701,6 +705,7 @@ solution SD(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix, mat
 			}
 			
 			i++;
+			
 			X0 = X1;
 		}
 		Xopt.fit_fun(ff, ud1, ud2);
@@ -739,6 +744,8 @@ solution CG(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix, mat
 				ab = expansion(ff, 0, 1, 1.2, Nmax, ud1, P);
 				h = golden(ff, ab[0], ab[1], epsilon, Nmax, ud1, P);
 				X1.x = X0.x + h.x * d;
+
+				cout << X1.x(0) << " " << X1.x(1) << endl;
 			}
 			else {
 				X1.x = X0.x + h0 * d;
@@ -747,7 +754,7 @@ solution CG(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix, mat
 			
 
 			if (norm(X0.x - X1.x) < epsilon) {
-				
+                Xopt = X1;
 				break;
 			}
 
@@ -763,6 +770,7 @@ solution CG(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix, mat
 			Xold = X0;
 			beta = pow(norm(X1.grad(gf, ud1, ud2)), 2) / pow(norm(Xold.grad(gf, ud1, ud2)), 2);
 			d = -X1.grad(gf, ud1, ud2) + beta * dOld;
+			
 			
 			X0 = X1;
 		}
@@ -811,11 +819,12 @@ solution Newton(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix,
 
 			if (solution::g_calls > Nmax) {
 				Xopt = X1;
-			break;
+				break;
 				throw ("Error: przekroczono Nmax w Newton\n");
 			}
 
 			i++;
+			cout << X1.x(0) << " " << X1.x(1) << endl;
 			X0 = X1;
 		}
 		Xopt.fit_fun(ff, ud1, ud2);
@@ -889,7 +898,7 @@ solution golden(matrix(*ff)(matrix, matrix, matrix), double a, double b, double 
 
 			if (solution::f_calls > Nmax) throw("error: przekroczono nmax");
 
-		} while (b[0].x - a[0].x > epsilon);
+		} while (b[0].y - a[0].y > epsilon);
 		
 		Xopt.x = (a[0].x + b[0].x) / 2;
 		Xopt.fit_fun(ff, ud1, ud2);
