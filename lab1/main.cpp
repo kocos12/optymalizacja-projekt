@@ -239,42 +239,42 @@ void lab3()
 void lab4()
 {
 	solution naszSolution;
-	matrix x0(2, new double[2] {-10., -10.});
+	matrix x0(2, 1, -10.);
 
-	//funkcja testowa:
-	srand(time(NULL));
-	double x1[100] = {};
-	double x2[100] = {};
-	double pom[2];
-	double h = 0.12;
+	////funkcja testowa:
+	//srand(time(NULL));
+	//double x1[100] = {};
+	//double x2[100] = {};
+	//double pom[2];
+	//double h = 0.12;
 
-	for (int i = 0; i < 100; i++) {
-		x1[i] = (20. * ((double)rand() / (double)RAND_MAX)) - 10.; //od -10 do 10
-		x2[i] = (20. * ((double)rand() / (double)RAND_MAX)) - 10.;
-		//cout << "x1(0) = " << x1[i] << "\tx2(0) = " << x2[i] << endl;
+	//for (int i = 0; i < 100; i++) {
+	//	x1[i] = (20. * ((double)rand() / (double)RAND_MAX)) - 10.; //od -10 do 10
+	//	x2[i] = (20. * ((double)rand() / (double)RAND_MAX)) - 10.;
+	//	//cout << "x1(0) = " << x1[i] << "\tx2(0) = " << x2[i] << endl;
 
-		pom[0] = x1[i];
-		pom[1] = x2[i];
-		matrix pomMatrix(2, pom);
-		x0 = pomMatrix;
+	//	pom[0] = x1[i];
+	//	pom[1] = x2[i];
+	//	matrix pomMatrix(2, pom);
+	//	x0 = pomMatrix;
 
-		naszSolution = SD(f4, gf1, x0, h, 0.01, 1000);
-		cout << x1[i] << " " << x2[i] << " " << naszSolution.x(0) << " " << naszSolution.x(1) << " " << naszSolution.y(0) << " " << solution::f_calls << " " << solution::g_calls << " ";
-		solution::clear_calls();
+	//	naszSolution = SD(f4, gf1, x0, h, 0.01, 1000);
+	//	cout << x1[i] << " " << x2[i] << " " << naszSolution.x(0) << " " << naszSolution.x(1) << " " << naszSolution.y(0) << " " << solution::f_calls << " " << solution::g_calls << " ";
+	//	solution::clear_calls();
 
-		naszSolution = CG(f4, gf1, x0, h, 0.01, 1000);
-		cout << naszSolution.x(0) << " " << naszSolution.x(1) << " " << naszSolution.y(0) << " " << solution::f_calls << " " << solution::g_calls << " ";
-		solution::clear_calls();
+	//	naszSolution = CG(f4, gf1, x0, h, 0.01, 1000);
+	//	cout << naszSolution.x(0) << " " << naszSolution.x(1) << " " << naszSolution.y(0) << " " << solution::f_calls << " " << solution::g_calls << " ";
+	//	solution::clear_calls();
 
-		naszSolution = Newton(f4, gf1, Hf, x0, h, 0.01, 1000);
-		cout << naszSolution.x(0) << " " << naszSolution.x(1) << " " << naszSolution.y(0) << " " << solution::f_calls << " " << solution::g_calls << " " << solution::H_calls << endl;
-		solution::clear_calls();
+	//	naszSolution = Newton(f4, gf1, Hf, x0, h, 0.01, 1000);
+	//	cout << naszSolution.x(0) << " " << naszSolution.x(1) << " " << naszSolution.y(0) << " " << solution::f_calls << " " << solution::g_calls << " " << solution::H_calls << endl;
+	//	solution::clear_calls();
 
-	}
-	//naszSolution = SD(f4, gf1, x0, -1., 0.01, 1000);
+	//}
+	naszSolution = SD(f4, gf1, x0, 0.05, 0.0001, 1000);
 	//naszSolution = CG(f4, gf1, x0, 0.05, 0.01, 1000);
 	//naszSolution = Newton(f4, gf1, Hf, x0, 0.05, 0.01, 1000);
-	//cout << naszSolution.x(0) << " " << naszSolution.x(1) << " " << naszSolution.y << " " << solution::f_calls << " " << solution::g_calls << endl;
+	cout << naszSolution.x(0) << " " << naszSolution.x(1) << " " << naszSolution.y << " " << solution::f_calls << " " << solution::g_calls << endl;
 }
 
 void lab5()

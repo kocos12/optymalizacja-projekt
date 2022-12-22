@@ -694,9 +694,10 @@ solution SD(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix, mat
 				break;
 			}
 
-			if (solution::f_calls > Nmax) {
-				throw ("Error: przekroczono Nmax w SD\n");
+			if (solution::g_calls > Nmax) {
+				Xopt = X1;
 				break;
+				//throw ("Error: przekroczono Nmax w SD\n");
 			}
 			
 			i++;
@@ -746,13 +747,15 @@ solution CG(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix, mat
 			
 
 			if (norm(X0.x - X1.x) < epsilon) {
-				Xopt = X1;
+				
 				break;
 			}
 
-			if (solution::f_calls > Nmax) {
-				throw ("Error: przekroczono Nmax w CG\n");
+			if (solution::g_calls > Nmax) {
+				Xopt = X1;
 				break;
+				throw ("Error: przekroczono Nmax w CG\n");
+				
 			}
 
 			i++;
@@ -806,9 +809,10 @@ solution Newton(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix,
 				break;
 			}
 
-			if (solution::f_calls > Nmax) {
+			if (solution::g_calls > Nmax) {
+				Xopt = X1;
+			break;
 				throw ("Error: przekroczono Nmax w Newton\n");
-				break;
 			}
 
 			i++;
@@ -830,12 +834,15 @@ solution golden(matrix(*ff)(matrix, matrix, matrix), double a, double b, double 
 		solution Xopt;
 		//Tu wpisz kod funkcji
 		int i = 0;
-		double alfa = (pow(5, 0.5) - 1) / 2.;
-		matrix bb(2, new double[2] {b, 0.});
-		matrix aa(2, new double[2] {a, 0.});
-
+		double alf = (pow(5, 0.5) - 1) / 2.;
+		matrix alfa (alf);
+		//matrix bb(2, new double[2] {b, 0.});
+		//matrix aa(2, new double[2] {a, 0.});
+		matrix aa(a);
+		matrix bb(b);
 		solution a[2], b[2], c[2], d[2];
-		matrix tmp(2, new double[2]{ 0,0 });
+		//matrix tmp(2, new double[2]{ 0,0 });
+		matrix tmp(0);
 		for(int j = 0 ; j < 2; j++){
 			a[j].x = tmp;
 			b[j].x = tmp;
@@ -879,8 +886,10 @@ solution golden(matrix(*ff)(matrix, matrix, matrix), double a, double b, double 
 			c[0] = c[1];
 			d[0] = d[1];
 			i++;
+
 			if (solution::f_calls > Nmax) throw("error: przekroczono nmax");
-		} while (b[0].y - a[0].y < epsilon);
+
+		} while (b[0].x - a[0].x > epsilon);
 		
 		Xopt.x = (a[0].x + b[0].x) / 2;
 		Xopt.fit_fun(ff, ud1, ud2);
