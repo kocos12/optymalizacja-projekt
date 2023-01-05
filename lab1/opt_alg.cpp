@@ -916,6 +916,46 @@ solution Powell(matrix(*ff)(matrix, matrix, matrix), matrix x0, double epsilon, 
 	{
 		solution Xopt;
 		//Tu wpisz kod funkcji
+		double vect1[] = { 1,0 };
+		double vect2[] = { 0,1 };
+		matrix e1(2, vect1);
+		matrix e2(2, vect2);
+		matrix e[] = { e1,e2 };
+
+		matrix d[2][1], h[3][1];
+		solution x[1], p[3][1];
+		x[0] = x0;
+		int i = 0;
+		int n = 2;
+
+		for (int j = 0; j < 2; j++){
+			d[j][0] = e[j];
+		}
+		do{
+			p[0][i] = x[i];
+			for (int j=1; j<n; j++){
+				//wyznacz hj- inna metode?
+				solution tmp = golden(ff, m2d(h[0][i]), m2d(h[1][i]), epsilon, Nmax, ud1, ud2);
+				h[j][i] = tmp.x;
+				p[j][i].x = p[j-1][i].x + h[j][i] * d[j][i];
+			}
+
+			if (norm(p[1][i].x - x[i].x) < epsilon) {
+				return Xopt.x = x[i].x; 
+			}
+
+			for (int j = 1; j < n-1; j++) {
+				d[j - 1][i].add_col(d[j][i]);
+			}
+
+			d[n - 1][i + 1] = p[n - 1][i].x - p[0][i].x;
+			solution tmp = golden(ff, m2d(h[0][i]), m2d(h[1][i]), epsilon, Nmax, ud1, ud2);
+			h[2][i] = tmp.x;
+			p[2][i].x = p[1][i].x + h[2][i] * d[1][i + 1];
+			x[i].x.add_row(p[2][i].x);
+
+			i++;
+		} while (solution::f_calls < Nmax);
 
 		return Xopt;
 	}

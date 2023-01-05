@@ -29,7 +29,8 @@ int main()
 		//lab1();
 		//lab2();
 		//lab3();
-		lab4();
+		//lab4();
+		lab5();
 	}
 	catch (string ex_info)
 	{
@@ -265,6 +266,11 @@ void lab4()
 
 void lab5()
 {
+	solution naszSolution;
+	double pom[2] = { 0.,0. };
+	matrix x0(2, pom);
+	naszSolution = Powell(f5, x0, 0.001, 1000);
+	cout << naszSolution.x(0) << " " << naszSolution.x(1) << " " << naszSolution.x(2) << " " << naszSolution.y(0) << " " << naszSolution.y(1) << " " << solution::f_calls << endl;
 
 }
 

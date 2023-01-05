@@ -28,5 +28,11 @@ matrix g1(matrix x);
 matrix g2(matrix x);
 matrix g3(matrix x,  double a);
 
+matrix ff5R(matrix x, matrix ud1, matrix ud2);
+
 double zewS(matrix x);
 double wewS(matrix x);
+
+matrix f51(double a, matrix x, matrix ud1, matrix ud2);
+matrix f52(double a, matrix x, matrix ud1, matrix ud2);
+matrix f5(matrix x, matrix ud1, matrix ud2);
