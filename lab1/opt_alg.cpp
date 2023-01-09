@@ -924,9 +924,14 @@ solution Powell(matrix(*ff)(matrix, matrix, matrix), matrix x0, double epsilon, 
 
 		matrix d[2][1], h[3][1];
 		solution x[1], p[3][1];
+		
 		x[0] = x0;
 		int i = 0;
 		int n = 2;
+
+		matrix P(n, 2);
+		double* ab;
+		solution hh;
 
 		for (int j = 0; j < 2; j++){
 			d[j][0] = e[j];
@@ -935,8 +940,15 @@ solution Powell(matrix(*ff)(matrix, matrix, matrix), matrix x0, double epsilon, 
 			p[0][i] = x[i];
 			for (int j=1; j<n; j++){
 				//wyznacz hj- inna metode?
-				solution tmp = golden(ff, m2d(h[0][i]), m2d(h[1][i]), epsilon, Nmax, ud1, ud2);
-				h[j][i] = tmp.x;
+				//solution tmp = golden(ff, m2d(h[0][i]), m2d(h[1][i]), epsilon, Nmax, ud1, ud2);
+
+				P.set_col(p[j][i].x, 0);
+				P.set_col(d[j][i], 1);
+
+				ab = expansion(ff, 0, 1, 1.2, Nmax, ud1, P);
+				hh = golden(ff, ab[0], ab[1], epsilon, Nmax, ud1, P);
+				
+				h[j][i] = hh.x;
 				p[j][i].x = p[j-1][i].x + h[j][i] * d[j][i];
 			}
 
@@ -949,8 +961,13 @@ solution Powell(matrix(*ff)(matrix, matrix, matrix), matrix x0, double epsilon, 
 			}
 
 			d[n - 1][i + 1] = p[n - 1][i].x - p[0][i].x;
-			solution tmp = golden(ff, m2d(h[0][i]), m2d(h[1][i]), epsilon, Nmax, ud1, ud2);
-			h[2][i] = tmp.x;
+			P.set_col(p[n-1][i].x, 0);
+			P.set_col(d[n-1][i], 1);
+
+			ab = expansion(ff, 0, 1, 1.2, Nmax, ud1, P);
+			hh = golden(ff, ab[0], ab[1], epsilon, Nmax, ud1, P);
+
+			h[2][i] = hh.x;
 			p[2][i].x = p[1][i].x + h[2][i] * d[1][i + 1];
 			x[i].x.add_row(p[2][i].x);
 

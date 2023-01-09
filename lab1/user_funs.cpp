@@ -326,6 +326,8 @@ matrix gfR1(matrix x, matrix ud1, matrix ud2) {
 	g = g / m_matrix;
 	return g;
 }
+
+
 matrix f51(double a, matrix x, matrix ud1, matrix ud2){
 	return (a * (pow(x(0) - 2), 2) + (pow(x(1) - 2), 2));
 }
@@ -336,7 +338,16 @@ matrix f52(double a, matrix x, matrix ud1, matrix ud2){
 matrix f5(matrix x, matrix ud1, matrix ud2){
 	double waga = 0.5;
 	double a = 1;
-	return waga * f51(a, x, ud1, ud2) + (1 - waga) * f52(a, x, ud1, ud2);
+	if (isnan(ud2(0, 0))) {
+		matrix y;
+		y = matrix(2, 1);
+		y[0] = f51(m2d(ud1(1)), x, ud1);
+		y[1] = f52(m2d(ud1(1)), x, ud1);
+		return y;
+	}
+	else {
+		return ud1(0) * f51(ud1(1), ud2[0]+x*ud2[1], ud1) + (1 - ud1(0)) * f52(ud1(1), ud2[0] + x * ud2[1], ud1);
+	}
 }
 
 matrix ff5R(matrix x, matrix ud1, matrix ud2){
@@ -352,7 +363,7 @@ matrix ff5R(matrix x, matrix ud1, matrix ud2){
 	else
 	{
 		matrix yt, xt = ud2[0] + x * ud2[1];
-		yt = ff5R(xt, ud1);
+		yt = ff5R(xt, ud1,ud2);
 		y = ud1 * (yt(0) - 0.06) / (1, 53 - 0, 06) + (1 - ud1) * (yt(1) - 5.25e-6) / (0.0032 - 5.25e-6);
 		double c = 1e10;
 		if (xt(0) < 0.1) y = y + c * (pow(0.1 - xt(0), 2));
