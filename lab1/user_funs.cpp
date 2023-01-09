@@ -336,8 +336,7 @@ matrix f52(double a, matrix x, matrix ud1, matrix ud2){
 }
 
 matrix f5(matrix x, matrix ud1, matrix ud2){
-	double waga = 0.5;
-	double a = 1;
+	
 	if (isnan(ud2(0, 0))) {
 		matrix y;
 		y = matrix(2, 1);
