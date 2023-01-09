@@ -969,6 +969,7 @@ solution Powell(matrix(*ff)(matrix, matrix, matrix), matrix x0, double epsilon, 
 
 			h[2][i] = hh.x;
 			p[2][i].x = p[1][i].x + h[2][i] * d[1][i + 1];
+
 			x[i].x.add_row(p[2][i].x);
 
 			i++;
