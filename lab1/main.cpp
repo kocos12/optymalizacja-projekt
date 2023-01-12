@@ -269,9 +269,10 @@ void lab5()
 	solution naszSolution;
 	double pom[2] = { 0.,0. };
 	matrix x0(2, pom);
-	naszSolution = Powell(f5, x0, 0.001, 1000);
-	cout << naszSolution.x(0) << " " << naszSolution.x(1) << " " << naszSolution.x(2) << " " << naszSolution.y(0) << " " << naszSolution.y(1) << " " << solution::f_calls << endl;
-
+	matrix ud1(2, new double[2] {1, 1});
+	naszSolution = Powell(f5, x0, 0.001, 1000, ud1 , 0.5);
+	//naszSolution.fit_fun(f5, ud1);
+	cout << naszSolution.x(0) << " " << naszSolution.x(1) << endl;
 }
 
 void lab6()

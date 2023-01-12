@@ -124,7 +124,7 @@ double* expansion2(matrix(*ff)(matrix, matrix, matrix), double x0, double d, dou
 	}
 	catch (string ex_info)
 	{
-		throw ("double* expansion(...):\n" + ex_info);
+		throw ("double* expansion2(...):\n" + ex_info);
 	}
 }
 solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, double epsilon, matrix ud1, matrix ud2)
@@ -920,60 +920,90 @@ solution Powell(matrix(*ff)(matrix, matrix, matrix), matrix x0, double epsilon, 
 		double vect2[] = { 0,1 };
 		matrix e1(2, vect1);
 		matrix e2(2, vect2);
-		matrix e[] = { e1,e2 };
+		matrix e[2] = { e1,e2 };
 
-		matrix d[2][1], h[3][1];
-		solution x[1], p[3][1];
+		int n = get_len(x0);
 		
-		x[0] = x0;
-		int i = 0;
-		int n = 2;
+		matrix d[2];
+		matrix d1(n,1);
+		matrix d2(n, 1);
+		solution x;
+		solution p0, p, h[2];
+		
+		x.x = x0;
 
+		p0.x = x0;
+		p = p0;
+		int i = 0;
+		
 		matrix P(n, 2);
 		double* ab;
-		solution hh;
-
-		for (int j = 0; j < 2; j++){
-			d[j][0] = e[j];
-		}
+	
+		//std::cout << "poczatek powell " << std::endl;
+		//for (int j = 0; j < 2; j++){
+		//	d[j] = e[j];
+		//}
+		d1 = e[0];
+		d2 = e[1];
+		d[0] = d1;
+		d[1] = d2;
+		//std::cout << "przed petla glowna" << std::endl;
 		do{
-			p[0][i] = x[i];
-			for (int j=1; j<n; j++){
-				//wyznacz hj- inna metode?
-				//solution tmp = golden(ff, m2d(h[0][i]), m2d(h[1][i]), epsilon, Nmax, ud1, ud2);
+			std::cout << std::endl << "poczatek iteracji nr. " << i << std::endl;
+			p0 = x;
+			for (int j=1; j<=n; j++){
 
-				P.set_col(p[j][i].x, 0);
-				P.set_col(d[j][i], 1);
+				P.set_col(p0.x, 0);
+				//std::cout << "pierwszy set col zrobiony" << std::endl;
+				P.set_col(d[j-1], 1);
+				//P.set_col(d2, 1);
 
-				ab = expansion(ff, 0, 1, 1.2, Nmax, ud1, P);
-				hh = golden(ff, ab[0], ab[1], epsilon, Nmax, ud1, P);
+				//std::cout << "drugi set col zrobiony" << std::endl;
+
+
+				ab = expansion2(ff, 0, 1, 1.2, Nmax, ud1, P);
+				h[j-1] = golden(ff, ab[0], ab[1], epsilon, Nmax, ud1, P);
 				
-				h[j][i] = hh.x;
-				p[j][i].x = p[j-1][i].x + h[j][i] * d[j][i];
+
+				p.x = p.x + h[j-1].x * d[j-1];
+				std::cout << "j = " << j << " p.x = " << p.x << std::endl;
+				//p.x = p.x + h[j-1].x * d2;
 			}
 
-			if (norm(p[1][i].x - x[i].x) < epsilon) {
-				return Xopt.x = x[i].x; 
+			if (norm(p.x - x.x) < epsilon) {
+				std::cout << "dowidzeeeeniaaaaa sajoooonaaaraaaa" << std::endl;
+				x.fit_fun(ff, ud1, NAN);
+				return Xopt = x; 
 			}
 
-			for (int j = 1; j < n-1; j++) {
-				d[j - 1][i].add_col(d[j][i]);
+			for (int j = 1; j <= n-1; j++) {
+				d[0] = d[1];
+				//d1 = d2;
 			}
+			std::cout <<std::endl<< "p.x = " << p.x << std::endl;
+			d[1] = p.x - p0.x;
+			std::cout << "d[1] = " << d[1] << std::endl;
+			
+			std::cout << "koniec zmiany bazy" << std::endl;
+			//d2 = p.x - p0.x;
 
-			d[n - 1][i + 1] = p[n - 1][i].x - p[0][i].x;
-			P.set_col(p[n-1][i].x, 0);
-			P.set_col(d[n-1][i], 1);
+			P.set_col(p.x, 0);
+			//std::cout << "trzeci set col zrobiony" << std::endl;
+			P.set_col(d[1], 1);
+			//P.set_col(d1, 1);
+			//std::cout << "czwarty set col zrobiony" << std::endl;
 
-			ab = expansion(ff, 0, 1, 1.2, Nmax, ud1, P);
-			hh = golden(ff, ab[0], ab[1], epsilon, Nmax, ud1, P);
+			ab = expansion2(ff, 0, 1, 1.2, Nmax, ud1, P);
+			h[0] = golden(ff, ab[0], ab[1], epsilon, Nmax, ud1, P);
 
-			h[2][i] = hh.x;
-			p[2][i].x = p[1][i].x + h[2][i] * d[1][i + 1];
+			p.x = p.x + h[0].x * d[1];
+			//p.x = p.x + h[0].x * d1;
 
-			x[i].x.add_row(p[2][i].x);
+			x = p;
 
 			i++;
 		} while (solution::f_calls < Nmax);
+
 
 		return Xopt;
 	}
