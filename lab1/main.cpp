@@ -262,17 +262,59 @@ void lab4()
 	matrix teta(3, pom2);
 	naszSolution = CG(fR4, gfR1, teta, 0.01, 0.01, 1000);
 	cout << naszSolution.x(0) << " " << naszSolution.x(1) << " " << naszSolution.x(2) << " " << naszSolution.y(0) << " " << naszSolution.y(1) << " " << solution::g_calls << endl;
+
+
 }
 
 void lab5()
 {
+	////funkcja testowa:
+	//ofstream out("wynikiTestoweLab5.txt");
+	//solution naszSolution;
+	//double a = 10;
+	//double waga = 0.0;
+	//matrix ud1(2, new double[2] {waga, a});
+	//for (int i = 0; i < 101; i++) {
+	//	double x1, x2;
+	//	x1 = (20. * ((double)rand() / (double)RAND_MAX)) - 10.; //od -10 do 10
+	//	x2 = (20. * ((double)rand() / (double)RAND_MAX)) - 10.;
+	//	double pom[2] = { x1,x2 };
+	//	matrix x0(2, pom);
+	//	ud1(1) = 1.;
+	//	naszSolution = Powell(f5, x0, 0.001, 1000, ud1, NAN);
+	//	cout <<  x1 << " " << x2 << " " << naszSolution.x(0) << " " << naszSolution.x(1) << " " << naszSolution.y(0) << " " << naszSolution.y(1) << " " << solution::f_calls << " ";
+	//	solution::clear_calls();
+	//	ud1(1) = 10.;
+	//	naszSolution = Powell(f5, x0, 0.001, 1000, ud1, NAN);
+	//	cout << naszSolution.x(0) << " " << naszSolution.x(1) << " " << naszSolution.y(0) << " " << naszSolution.y(1) << " " << solution::f_calls << " ";
+	//	solution::clear_calls();
+
+	//	ud1(1) = 100.;
+	//	naszSolution = Powell(f5, x0, 0.001, 1000, ud1, NAN);
+	//	cout << naszSolution.x(0) << " " << naszSolution.x(1) << " " << naszSolution.y(0) << " " << naszSolution.y(1) << " " << solution::f_calls << endl;
+	//	solution::clear_calls();
+
+	//	ud1(0) += 0.01;
+	//}
+
+	////problem rzeczywisty:
+	ofstream out("wynikiRzeczywisteLab5.txt");
 	solution naszSolution;
-	double pom[2] = { 0.,0. };
-	matrix x0(2, pom);
-	matrix ud1(2, new double[2] {1, 1});
-	naszSolution = Powell(f5, x0, 0.001, 1000, ud1 , 0.5);
-	//naszSolution.fit_fun(f5, ud1);
-	cout << naszSolution.x(0) << " " << naszSolution.x(1) << endl;
+	double waga = 0.0;
+	matrix ud1(waga);
+	for (int i = 0; i < 101; i++) {
+		double l, d;
+		l = (900. * ((double)rand() / (double)RAND_MAX)) + 100.;
+		d = (40. * ((double)rand() / (double)RAND_MAX)) - 10.;
+		double pom[2] = { l,d };
+		matrix x0(2, pom);
+		naszSolution = Powell(ff5R, x0, 0.001, 1000, ud1, 0);
+		cout << l << " " << d << " " << naszSolution.x(0) << " " << naszSolution.x(1) << " " << naszSolution.y(0) << " " << naszSolution.y(1) << " " << " " << solution::f_calls << endl;
+		solution::clear_calls();
+		
+		ud1(0) += 0.01;
+	}
+
 }
 
 void lab6()
