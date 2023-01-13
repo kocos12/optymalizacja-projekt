@@ -1036,12 +1036,12 @@ solution EA(matrix(*ff)(matrix, matrix, matrix), int N, matrix limits, int mi, i
 
 			//mutacja
 			for (int i = 0; i < lambda; i++) {
-				double, alfa, beta, r; //alfa i beta wzory od N zalezne na tablicy byly
+				double alfa, beta, r; //alfa i beta wzory od N zalezne na tablicy byly
 				//alfa = ;
 				//beta = ;
 				r = m2d(randn_mat());
 				for (int j = 0; j < N; j++) {
-					P[mi + i].x(j, 1) *= exp(alfa * r + beta * m2d(randn_mat());
+					P[mi + i].x(j, 1) *= exp(alfa * r + beta * m2d(randn_mat()));
 					P[mi + i].x(j, 0) += P[mi + i].x(j, 1) * m2d(randn_mat());
 				}
 			}
