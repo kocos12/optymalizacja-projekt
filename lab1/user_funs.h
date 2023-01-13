@@ -36,3 +36,7 @@ double wewS(matrix x);
 matrix f51(double a, matrix x, matrix ud1, matrix = NAN);
 matrix f52(double a, matrix x, matrix ud1, matrix = NAN);
 matrix f5(matrix x, matrix ud1, matrix ud2);
+
+
+matrix df6(double t, matrix Y, matrix ud1, matrix ud2);
+matrix fR6(matrix x, matrix ud1, matrix ud2);

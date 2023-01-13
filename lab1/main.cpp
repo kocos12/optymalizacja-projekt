@@ -319,5 +319,5 @@ void lab5()
 
 void lab6()
 {
-
+	//funkcja testowa jakas taka jak w lab2 bylo chyba
 }
