@@ -958,7 +958,8 @@ solution Powell(matrix(*ff)(matrix, matrix, matrix), matrix x0, double epsilon, 
 			}
 
 			if (norm(p.x - x.x) < epsilon) {
-				x.fit_fun(ff, ud1, NAN);
+				//x.fit_fun(ff, ud1, NAN);
+				x.fit_fun(ff, ud1, ud2);
 				return Xopt = x; 
 			}
 
@@ -992,85 +993,85 @@ solution Powell(matrix(*ff)(matrix, matrix, matrix), matrix x0, double epsilon, 
 
 solution EA(matrix(*ff)(matrix, matrix, matrix), int N, matrix limits, int mi, int lambda, matrix sigma0, double epsilon, int Nmax, matrix ud1, matrix ud2)
 {
-	try
-	{
+	//try
+	//{
 		solution Xopt;
-		//Tu wpisz kod funkcji
-		solution* P = new solution[mi + lambda];
-		solution* Pm = new solution[mi];
-		matrix IFF(mi, 1);
+	//	//Tu wpisz kod funkcji
+	//	solution* P = new solution[mi + lambda];
+	//	solution* Pm = new solution[mi];
+	//	matrix IFF(mi, 1);
 
-		for (int i = 0; i < mi; i++) {
-			P[i].x = matrix(N, 2);
-			for (int j = 0; j < N; j++) {
-				P[i].x(j, 0) = (limits(j, 1) - limits(j, 0)) * m2d(rand_mat()) + limits(j, 0);
-				P[i].x(j, 1) = sigma0(j);
-			}
-			if (P[i].fit_fun(ff, ud1, ud2) < epsilon) {
-				Xopt = P[i];
-				//delete macierz P i Pm
-				return Xopt;
-			}
-		}
+	//	for (int i = 0; i < mi; i++) {
+	//		P[i].x = matrix(N, 2);
+	//		for (int j = 0; j < N; j++) {
+	//			P[i].x(j, 0) = (limits(j, 1) - limits(j, 0)) * m2d(rand_mat()) + limits(j, 0);
+	//			P[i].x(j, 1) = sigma0(j);
+	//		}
+	//		if (P[i].fit_fun(ff, ud1, ud2) < epsilon) {
+	//			Xopt = P[i];
+	//			//delete macierz P i Pm
+	//			return Xopt;
+	//		}
+	//	}
 
-		while (true) {
-			double S_IFF = 0.;
+	//	while (true) {
+	//		double S_IFF = 0.;
 
-			for (int i = 0; i < mi; i++) {
-				IFF(i) = 1 / m2d(P[i].y);
-				S_IFF += IFF(i);
-			}
+	//		for (int i = 0; i < mi; i++) {
+	//			IFF(i) = 1 / m2d(P[i].y);
+	//			S_IFF += IFF(i);
+	//		}
 
-			for (int i = 0; i < lambda; i++) {
-				double r = m2d(rand_mat());
-				double s = 0.;
+	//		for (int i = 0; i < lambda; i++) {
+	//			double r = m2d(rand_mat());
+	//			double s = 0.;
 
-				for (int j = 0; j < mi; j++) {
-					s += IFF(j);
-					if (r <= s) {
-						P[mi + i] = P[j];
-						break;
-					}
-				}
-			}
+	//			for (int j = 0; j < mi; j++) {
+	//				s += IFF(j);
+	//				if (r <= s) {
+	//					P[mi + i] = P[j];
+	//					break;
+	//				}
+	//			}
+	//		}
 
-			//mutacja
-			for (int i = 0; i < lambda; i++) {
-				double alfa, beta, r; //alfa i beta wzory od N zalezne na tablicy byly
-				//alfa = ;
-				//beta = ;
-				r = m2d(randn_mat());
-				for (int j = 0; j < N; j++) {
-					P[mi + i].x(j, 1) *= exp(alfa * r + beta * m2d(randn_mat()));
-					P[mi + i].x(j, 0) += P[mi + i].x(j, 1) * m2d(randn_mat());
-				}
-			}
+	//		//mutacja
+	//		for (int i = 0; i < lambda; i++) {
+	//			double alfa, beta, r; //alfa i beta wzory od N zalezne na tablicy byly
+	//			//alfa = ;
+	//			//beta = ;
+	//			r = m2d(randn_mat());
+	//			for (int j = 0; j < N; j++) {
+	//				P[mi + i].x(j, 1) *= exp(alfa * r + beta * m2d(randn_mat()));
+	//				P[mi + i].x(j, 0) += P[mi + i].x(j, 1) * m2d(randn_mat());
+	//			}
+	//		}
 
-			//krzyzowanie
-			for (int i = 0; i < lambda; i += 2) {
-				double r = m2d(rand_mat()); // waga
-				matrix tmp = P[mi + i].x;
-				P[mi + i].x = r * P[mi + i].x + (1 - r) * P[mi + i + 1].x;
-				P[mi + i + 1].x = r * P[mi + i + 1].x + (1 - r) * P[mi + i].x;
-			}
+	//		//krzyzowanie
+	//		for (int i = 0; i < lambda; i += 2) {
+	//			double r = m2d(rand_mat()); // waga
+	//			matrix tmp = P[mi + i].x;
+	//			P[mi + i].x = r * P[mi + i].x + (1 - r) * P[mi + i + 1].x;
+	//			P[mi + i + 1].x = r * P[mi + i + 1].x + (1 - r) * P[mi + i].x;
+	//		}
 
-			//warunek stopu
-			for (int i = 0; i < lambda; i++) {
-				if (P[mi + i].fit_fun(ff, ud1, ud2) < epsilon) {
-					Xopt = P[i];
-					//delete macierz P i Pm
-					return Xopt;
-				}
-			}
+	//		//warunek stopu
+	//		for (int i = 0; i < lambda; i++) {
+	//			if (P[mi + i].fit_fun(ff, ud1, ud2) < epsilon) {
+	//				Xopt = P[i];
+	//				//delete macierz P i Pm
+	//				return Xopt;
+	//			}
+	//		}
 
-			//wybieranie mi najlepiej przystosowanych osobnikow 
-			//chyba mamy sami wymyslic?
-		}
+	//		//wybieranie mi najlepiej przystosowanych osobnikow 
+	//		//chyba mamy sami wymyslic?
+	//	}
 
 		return Xopt;
-	}
-	catch (string ex_info)
-	{
-		throw ("solution EA(...):\n" + ex_info);
-	}
+	//}
+	//catch (string ex_info)
+	//{
+	//	throw ("solution EA(...):\n" + ex_info);
+	//}
 }
