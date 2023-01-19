@@ -398,6 +398,7 @@ matrix df6(double t, matrix Y, matrix ud1, matrix ud2) {
 	dY(1) = (-b1 * Y(1) - b2 * (Y(1) - Y(3)) - k1 * Y(0) - k2 * (Y(0) - Y(2))) / m1;
 	dY(2) = Y(3);
 	dY(3) = (F + b2 * (Y(1) - Y(3)) + k2 * (Y(0) - Y(2))) / m2;
+	//cout << t << "\t" << Y(0) << "\t" << Y(2) << endl; //do symulacji
 	return dY;
 }
 
@@ -418,6 +419,8 @@ matrix fR6(matrix x, matrix ud1, matrix ud2) {
 
 	matrix Y0(4, new double[4] {0., 0., 0., 0.});
 	matrix* Y = solve_ode(df6, 0, 0.1, 100, Y0, ud1, X[0]);
+	//matrix* Y = solve_ode(df6, 0, 0.2, 100, Y0, ud1, x); //do symulacji
+
 	y = 0;
 	for (int i = 0; i < N; i++) {
 		y = y + abs(X(i, 0) - Y[1](i, 0)) + abs(X(i, 1) - Y[1](i, 2));

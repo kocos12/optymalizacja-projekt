@@ -379,20 +379,26 @@ void lab6()
 
 	//problem rzeczywisty:
 	ofstream out("wyniki_f_rzeczywista_lab6.txt");
-	matrix sigma0 = matrix(2,1);
-	int mi = 20;
-	int N = 2, Nmax = 2000;
-	int lambda = 40;
-	double epsilon = 1e-3;
-	solution EH;
-	matrix limits = matrix(2,2);
-	limits(0,0) = -5.;
-	limits(0,1) = 5.;
-	limits(1,0) = -5.;
-	limits(1,1) = 5.;
+	//matrix sigma0 = matrix(2,1);
+	//int mi = 20;
+	//int N = 2, Nmax = 1000;
+	//int lambda = 40;
+	//double epsilon = 1e-3;
+	//solution EH;
+	//matrix limits = matrix(2,2);
+	//limits(0,0) = 0.1;
+	//limits(0,1) = 3.;
+	//limits(1,0) = 0.1;
+	//limits(1,1) = 3.;
 
-	sigma0(0) = 0.01;
-	sigma0(1) = 0.01;
-	EH = EA(fR6,N,limits,mi,lambda,sigma0,epsilon,Nmax);
-	cout << EH.x(0) << " " << EH.x(1) << " " << EH.y(0) << solution::f_calls << endl;
+	//sigma0(0) = 0.01;
+	//sigma0(1) = 0.01;
+	//EH = EA(fR6,N,limits,mi,lambda,sigma0,epsilon,Nmax);
+	//cout << EH.x(0) << " " << EH.x(1) << " " << EH.y(0) << solution::f_calls << endl;
+
+	////symulacja
+	matrix b(2,1);
+	b(0) = 1.41813;
+	b(1) = 0.94702;
+	matrix tmp = fR6(b, NAN, NAN);
 }
