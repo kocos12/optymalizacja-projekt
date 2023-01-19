@@ -386,18 +386,18 @@ matrix ff5R(matrix x, matrix ud1, matrix ud2){
 
 matrix f6(matrix x, matrix ud1, matrix ud2) {	
 	double pi = 3.141592;
-	return (x(0) * x(0)) + (x(1) * x(1)) - cos(2.5 * pi * x(0)) - cos(2.5 * pi * x(1)) + 2;
+	return pow(x(0),2) + pow(x(1),2) - cos(2.5*pi*x(0)) - cos(2.5*pi*x(1)) + 2;
 }
 
 matrix df6(double t, matrix Y, matrix ud1, matrix ud2) {
-//	double m1, m2, k1, k2, F, b1, b2; //wartosc kiedys sie da jak bedzie potrzebna
-//	b1 = ud2(0);
-//	b2 = ud2(1);
+	double m1 = 5., m2 = 5., k1 = 1., k2 = 1., F = 1., b1, b2; //wartosc kiedys sie da jak bedzie potrzebna
+	b1 = ud2(0);
+	b2 = ud2(1);
 	matrix dY(4, 1);
-//	dY(0) = Y(1);
-//	dY(1) = (-b1 * Y(1) - b2 * (Y(1) - Y(3)) - k1 * Y(0) - k2 * (Y(0) - Y(2))) / m1;
-//	dY(2) = Y(3);
-//	dY(3) = (F + b2 * (Y(1) - Y(3)) + k2 * (Y(0) - Y(2))) / m2;
+	dY(0) = Y(1);
+	dY(1) = (-b1 * Y(1) - b2 * (Y(1) - Y(3)) - k1 * Y(0) - k2 * (Y(0) - Y(2))) / m1;
+	dY(2) = Y(3);
+	dY(3) = (F + b2 * (Y(1) - Y(3)) + k2 * (Y(0) - Y(2))) / m2;
 	return dY;
 }
 
@@ -405,7 +405,9 @@ matrix fR6(matrix x, matrix ud1, matrix ud2) {
 	matrix y;
 	int N = 1001;
 	matrix X(N, 2); //do niej wczytac dane z pliku
-	ifstream in("./polozenia.txt");
+	ifstream in;
+	in.open("polozenia.txt");
+	if (!in.good()) exit(100);
 	int j = 0;
 	while(!in.eof() && j < N) {
 		in >> X(j,0);

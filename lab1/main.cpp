@@ -321,29 +321,78 @@ void lab5()
 
 void lab6()
 {
+	////funkcja testowa:
+	//ofstream out("wyniki_f_testowa_lab6.txt");
+	//matrix sigma0 = matrix(2,1);
+	//int mi = 20;
+	//int N = 2, Nmax = 2000;
+	//int lambda = 40;
+	//double epsilon = 1e-3;
+	//solution EH;
+	//matrix limits = matrix(2,2);
+	//limits(0,0) = -5.;
+	//limits(0,1) = 5.;
+
+	//limits(1,0) = -5.;
+	//limits(1,1) = 5.;
+
+	//sigma0(0) = 0.01;
+	//sigma0(1) = 0.01;
+	//for (int i = 0; i < 100; i++) {
+	//	EH = EA(f2, N, limits, mi, lambda, sigma0, epsilon, Nmax);
+	//	out << EH.x(0) << " " << EH.x(1) << " " << EH.y(0) << " " << solution::f_calls << endl;
+	//	solution::clear_calls();		
+	//}
+
+	//sigma0(0) = 0.1;
+	//sigma0(1) = 0.1;
+	//for (int i = 0; i < 100; i++) {
+	//	EH = EA(f2, N, limits, mi, lambda, sigma0, epsilon, Nmax);
+	//	out << EH.x(0) << " " << EH.x(1) << " " << EH.y(0) << " " << solution::f_calls << endl;
+	//	solution::clear_calls();		
+	//}
+
+	//sigma0(0) = 1.;
+	//sigma0(1) = 1.;
+	//for (int i = 0; i < 100; i++) {
+	//	EH = EA(f2, N, limits, mi, lambda, sigma0, epsilon, Nmax);
+	//	out << EH.x(0) << " " << EH.x(1) << " " << EH.y(0) << " " << solution::f_calls << endl;
+	//	solution::clear_calls();		
+	//}
+
+	//sigma0(0) = 10.;
+	//sigma0(1) = 10.;
+	//for (int i = 0; i < 100; i++) {
+	//	EH = EA(f2, N, limits, mi, lambda, sigma0, epsilon, Nmax);
+	//	out << EH.x(0) << " " << EH.x(1) << " " << EH.y(0) << " " << solution::f_calls << endl;
+	//	solution::clear_calls();		
+	//}
+
+	//sigma0(0) = 100.;
+	//sigma0(1) = 100.;
+	//for (int i = 0; i < 100; i++) {
+	//	EH = EA(f2, N, limits, mi, lambda, sigma0, epsilon, Nmax);
+	//	out << EH.x(0) << " " << EH.x(1) << " " << EH.y(0) << " " << solution::f_calls << endl;
+	//	solution::clear_calls();		
+	//}
+
+
+	//problem rzeczywisty:
+	ofstream out("wyniki_f_rzeczywista_lab6.txt");
 	matrix sigma0 = matrix(2,1);
-	int mi = 80;
-	int N = 2, Nmax = 1000;
-	int lambda = 80;
-	double epsilon = 1e-1;
+	int mi = 20;
+	int N = 2, Nmax = 2000;
+	int lambda = 40;
+	double epsilon = 1e-3;
 	solution EH;
 	matrix limits = matrix(2,2);
 	limits(0,0) = -5.;
 	limits(0,1) = 5.;
 	limits(1,0) = -5.;
 	limits(1,1) = 5.;
-	for (int i = 0; i < 100; i++) {
-		
-		sigma0(0) = 0.01;
-		sigma0(1) = 0.01;
 
-		EH = EA(f2, N, limits, mi, lambda, sigma0, epsilon, Nmax);
-		//cout << x0(0) << " " << x0(1) << " " << EH.x(0) * 1000 << " " << EH.x(1) << " " << EH.y(0) << " " << EH.y(1) << " " << " " << solution::f_calls << endl;
-		solution::clear_calls();
-
-		////solution EA(matrix(*ff)(matrix, matrix, matrix), int N, matrix limits, int mi, int lambda, matrix sigma0, double epsilon, int Nmax, matrix ud1, matrix ud2)
-		
-	}
-	
-	//funkcja testowa jakas taka jak w lab2 bylo chyba
+	sigma0(0) = 0.01;
+	sigma0(1) = 0.01;
+	EH = EA(fR6,N,limits,mi,lambda,sigma0,epsilon,Nmax);
+	cout << EH.x(0) << " " << EH.x(1) << " " << EH.y(0) << solution::f_calls << endl;
 }

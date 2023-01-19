@@ -1135,6 +1135,9 @@ solution EA(matrix(*ff)(matrix, matrix, matrix), int N, matrix limits, int mi, i
 		solution* P = new solution[mi + lambda];
 		solution* Pm = new solution[mi];
 		matrix IFF(mi, 1);
+		matrix tmp = matrix(N,2);
+		double r, s, alfa, beta, S_IFF;
+		int min;
 
 		for (int i = 0; i < mi; i++) {
 			P[i].x = matrix(N, 2);
@@ -1145,13 +1148,15 @@ solution EA(matrix(*ff)(matrix, matrix, matrix), int N, matrix limits, int mi, i
 			if (P[i].fit_fun(ff, ud1, ud2) < epsilon) {
 				Xopt = P[i];
 				//delete macierz P i Pm
+				delete[] P;
+				delete[] Pm;
 				return Xopt;
 			}
 		}
 		int iteracja = 0;
 		while (true) {
 			cout << iteracja++ << endl;
-			double S_IFF = 0.;
+			S_IFF = 0.;
 
 			for (int i = 0; i < mi; i++) {
 				IFF(i) = 1. / m2d(P[i].y);
@@ -1159,8 +1164,9 @@ solution EA(matrix(*ff)(matrix, matrix, matrix), int N, matrix limits, int mi, i
 			}
 
 			for (int i = 0; i < lambda; i++) {
-				double r = m2d(rand_mat());
-				double s = 0.;
+				//double r = m2d(rand_mat());
+				r = S_IFF * m2d(rand_mat());
+				s = 0.;
 
 				for (int j = 0; j < mi; j++) {
 					s += IFF(j);
@@ -1173,53 +1179,61 @@ solution EA(matrix(*ff)(matrix, matrix, matrix), int N, matrix limits, int mi, i
 
 			//mutacja
 			for (int i = 0; i < lambda; i++) {
-				double alfa, beta, r; //alfa i beta wzory od N zalezne na tablicy byly
-				alfa = 1. / sqrt(2. *N);
-				beta = 1./ sqrt(sqrt(2.*N));
-				r = m2d(randn_mat());
+				//double alfa, beta, r; //alfa i beta wzory od N zalezne na tablicy byly
+				alfa = pow(2. * N, -0.5);
+				//beta = pow(2. * N, -0.25);
+				beta = pow(2. * pow(N, 0.5), -0.5);
+				r = m2d(rand_mat());
 				for (int j = 0; j < N; j++) {
-					P[mi + i].x(j, 1) *= exp(alfa * r + beta * m2d(randn_mat()));
+					//P[mi + i].x(j, 1) *= exp(alfa * r + beta * m2d(randn_mat()));
+					P[mi + i].x(j, 1) *= exp(beta * r + alfa * m2d(randn_mat()));
 					P[mi + i].x(j, 0) += P[mi + i].x(j, 1) * m2d(randn_mat());
 				}
 			}
 
 			//krzyzowanie
 			for (int i = 0; i < lambda; i += 2) {
-				double r = m2d(rand_mat()); // waga
-				matrix tmp = matrix(N,2);
+				r = m2d(rand_mat()); // waga
 				tmp = P[mi + i].x;
 				P[mi + i].x = r * P[mi + i].x + (1 - r) * P[mi + i + 1].x;
-				//P[mi + i + 1].x = r * P[mi + i + 1].x + (1 - r) * P[mi + i].x;
 				P[mi + i + 1].x = r * P[mi + i + 1].x + (1 - r) * tmp;
 			}
 
 			//warunek stopu
 			for (int i = 0; i < lambda; i++) {
 				if (P[mi + i].fit_fun(ff, ud1, ud2) < epsilon) {
-					Xopt = P[i];
+					Xopt = P[mi + i];
 					//delete macierz P i Pm
+					delete[] P;
+					delete[] Pm;
 					return Xopt;
 				}
 			}
 
-			//wybieranie mi najlepiej przystosowanych osobnikow 
-			for (int i = 0; i < mi; i++) {
-				Pm[i] = P[i];
-			}
-			for (int i = 0; i < lambda; i++) {
-				for (int j = 0; j < mi; j++) {
-					if (P[mi + i].y < Pm[j].y) {
-						Pm[j] = P[mi + i];
-						break;
+			//wybieranie mi najlepiej przystosowanych osobnikow
+			for (int i = 0; i < mi; ++i)
+			{
+				min = 0;
+				for (int j = 1; j < mi + lambda ; ++j) {
+					if (P[min].y > P[j].y) {
+						min = j;
 					}
 				}
+				Pm[i] = P[min] ;
+				P[min].y = 1e10;
 			}
-			for (int i = 0; i < mi; i++) {
+			for (int i = 0; i < mi; ++i) {
 				P[i] = Pm[i];
 			}
-		
+
+			if(solution::f_calls > Nmax) {
+				Xopt = P[0];
+				break;
+			}
 		}
 
+		delete[] P;
+		delete[] Pm;
 		return Xopt;
 	}
 	catch (string ex_info)
@@ -1227,3 +1241,109 @@ solution EA(matrix(*ff)(matrix, matrix, matrix), int N, matrix limits, int mi, i
 		throw ("solution EA(...):\n" + ex_info);
 	}
 }
+
+//solution EA(matrix(*ff)(matrix, matrix, matrix), int N, matrix limits, int mi, int lambda, matrix sigma0, double epsilon, int Nmax, matrix ud1, matrix ud2)
+//{
+//	try
+//	{
+//		solution Xopt;
+//		solution* P = new solution[mi + lambda];
+//		solution* Pm = new solution[mi];
+//		matrix IFF(mi, 1), temp(N, 2);
+//		double r, s, s_IFF;
+//		double tau = pow(2 * N, -0.5), tau1 = pow(2 * pow(N, 0.5), -0.5);
+//		int j_min;
+//		for (int i = 0; i < mi; ++i)
+//		{
+//			P[i].x = matrix(N, 2);
+//			for (int j = 0; j < N; ++j)
+//			{
+//				P[i].x(j, 0) = (limits(j, 1) - limits(j, 0)) * m2d(rand_mat()) + limits(j, 0);
+//				P[i].x(j, 1) = sigma0(j);
+//			}
+//			if (P[i].fit_fun(ff, ud1, ud2) < epsilon)
+//			{
+//				Xopt = P[i];
+//				Xopt.flag = 0;
+//				delete[]P;
+//				delete[]Pm;
+//				return Xopt;
+//			}
+//		}
+//		while (true)
+//		{
+//			s_IFF = 0;
+//			for (int i = 0; i< mi ; ++i)
+//			{
+//				IFF(i) = 1 / m2d(P[i].y);
+//				s_IFF += IFF(i);
+//			}
+//			for (int i = 0; i<lambda ; ++i)
+//			{
+//				r = s_IFF * m2d(rand_mat());
+//				s = 0;
+//					for (int j = 0; j<mi; ++j)
+//					{
+//						s += IFF(j);
+//						if (r<=s )
+//						{
+//							P[mi + i] = P[j] ;
+//							break;
+//						}
+//					}
+//			}
+//			for (int i = 0; i< lambda ; ++i)
+//			{
+//				r = m2d(rand_mat());
+//				for (int j = 0; j < N; ++j)
+//				{
+//					P[mi + i].x(j, 1) *= exp(tau1 * r +tau *m2d(randn_mat()));
+//					P[mi + i].x(j, 0) += P[mi + i].x(j, 1) * m2d(randn_mat());
+//				}
+//			}
+//			for (int i = 0; i< lambda; i += 2)
+//			{
+//				r = m2d(rand_mat());
+//				temp = P[mi+i].x ;
+//				P[mi + i].x = r * P[mi+i].x + (1-r) * P[mi+i+1].x;
+//				P[mi + i + 1].x = r * P[mi+i+1].x + (1-r) * temp;
+//			}
+//			for (int i = 0; i < lambda; ++i)
+//			{
+//				if (P[mi+i].fit_fun(ff,ud1, ud2) < epsilon)
+//				{
+ 
+//					Xopt = P[mi+i] ;
+//					Xopt.flag = 0;
+//					delete[]P;
+//					delete[]Pm;
+//					return Xopt;
+//				}
+//			}
+//			for (int i = 0; i < mi; ++i)
+//			{
+//				j_min = 0;
+//				for (int j = 1; j < mi + lambda ; ++j)
+//					if (P[j_min].y > P[j].y )
+//						j_min = j;
+//				Pm[i] = P[j_min] ;
+//				P[j_min].y = 1e10;
+//			}
+//			for (int i = 0; i < mi; ++i)
+//				P[i] = Pm[i];
+//			if (solution::f_calls > Nmax)
+//			{
+//				Xopt = P[0];
+//				Xopt.flag = 1;
+//				break;
+//			}
+//		}
+//		delete[]P;
+//		delete[]Pm;
+//		return Xopt;
+//	}
+//	catch(string ex_info)
+//	{
+//		throw ("solution EA(...):\n" + ex_info);
+//	}
+//}
