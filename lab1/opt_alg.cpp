@@ -127,6 +127,54 @@ double* expansion2(matrix(*ff)(matrix, matrix, matrix), double x0, double d, dou
 		throw ("double* expansion2(...):\n" + ex_info);
 	}
 }
+
+double* expansion3(matrix(*ff)(matrix, matrix, matrix), double x0, double d, double alpha, int Nmax, matrix ud1, matrix ud2)
+{
+	try
+	{
+		double* p = new double[2] { 0, 0 };
+		int i = 0;
+		solution X0(x0), X1(x0 + d);
+		X0.fit_fun(ff, ud1, ud2);
+		X1.fit_fun(ff, ud1, ud2);
+		if (X0.y == X1.y)
+		{
+			p[0] = m2d(X0.x);
+			p[1] = m2d(X1.x);
+			return p;
+		}
+		if (X0.y < X1.y)
+		{
+			d *= -1;
+			X1.x = X0.x + d;
+			X1.fit_fun(ff, ud1, ud2);
+			if (X1.y >= X0.y)
+			{
+				p[0] = m2d(X1.x);
+				p[1] = m2d(X0.x) - d;
+				return p;
+			}
+		}
+		solution X2;
+		while (true)
+		{
+			++i;
+			X2.x = x0 + pow(alpha, i) * d;
+			X2.fit_fun(ff, ud1, ud2);
+			if (X2.y >= X1.y || solution::f_calls > Nmax)
+				break;
+			X0 = X1;
+			X1 = X2;
+		}
+		d > 0 ? p[0] = m2d(X0.x), p[1] = m2d(X2.x) : (p[0] = m2d(X2.x), p[1] = m2d(X0.x));
+		return p;
+	}
+	catch (string ex_info)
+	{
+		throw ("double* expansion(...):\n" + ex_info);
+	}
+}
+
 solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, double epsilon, matrix ud1, matrix ud2)
 {
 	try
@@ -836,72 +884,124 @@ solution Newton(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix,
 	}
 }
 
+//solution golden(matrix(*ff)(matrix, matrix, matrix), double a, double b, double epsilon, int Nmax, matrix ud1, matrix ud2)
+//{
+//	try
+//	{
+//		solution Xopt;
+//		//Tu wpisz kod funkcji
+//		int i = 0;
+//		double alf = (pow(5, 0.5) - 1) / 2.;
+//		matrix alfa (alf);
+//		//matrix bb(2, new double[2] {b, 0.});
+//		//matrix aa(2, new double[2] {a, 0.});
+//		matrix aa(a);
+//		matrix bb(b);
+//		solution a[2], b[2], c[2], d[2];
+//		//matrix tmp(2, new double[2]{ 0,0 });
+//		matrix tmp(0);
+//		for(int j = 0 ; j < 2; j++){
+//			a[j].x = tmp;
+//			b[j].x = tmp;
+//			c[j].x = tmp;
+//			d[j].x = tmp;
+//		}
+		
+//		b[0].x = bb;
+//		a[0].x = aa;
+//		c[0].x = b[0].x - alfa * (b[0].x - a[0].x);
+//		d[0].x = a[0].x + alfa * (b[0].x - a[0].x);
+//		a[0].fit_fun(ff, ud1, ud2);
+//		b[0].fit_fun(ff, ud1, ud2);
+//		c[0].fit_fun(ff, ud1, ud2);
+//		d[0].fit_fun(ff, ud1, ud2);
+//		do {
+//			if(c[0].y < d[0].y) {
+//				a[1].x = a[0].x;
+//				b[1].x = d[0].x;
+//				c[1].x = b[1].x - alfa * (b[1].x - a[1].x);
+//				d[1].x = c[0].x;
+
+//				a[1].fit_fun(ff, ud1, ud2);
+//				b[1].fit_fun(ff, ud1, ud2);
+//				c[1].fit_fun(ff, ud1, ud2);
+//				d[1].fit_fun(ff, ud1, ud2);
+//			}
+//			else {
+//				a[1].x = c[0].x;
+//				b[1].x = b[0].x;
+//				c[1].x = d[0].x;
+//				d[1].x = a[1].x + alfa * (b[1].x - a[1].x);
+
+//				a[1].fit_fun(ff, ud1, ud2);
+//				b[1].fit_fun(ff, ud1, ud2);
+//				c[1].fit_fun(ff, ud1, ud2);
+//				d[1].fit_fun(ff, ud1, ud2);
+//			}
+//			a[0] = a[1];
+//			b[0] = b[1];
+//			c[0] = c[1];
+//			d[0] = d[1];
+//			i++;
+
+//			if (solution::f_calls > Nmax) throw("error: przekroczono nmax");
+
+//		} while (b[0].y - a[0].y > epsilon);
+		
+//		Xopt.x = (a[0].x + b[0].x) / 2;
+//		Xopt.fit_fun(ff, ud1, ud2);
+//		return Xopt;
+//	}
+//	catch (string ex_info)
+//	{
+//		throw ("solution golden(...):\n" + ex_info);
+//	}
+//}
+
 solution golden(matrix(*ff)(matrix, matrix, matrix), double a, double b, double epsilon, int Nmax, matrix ud1, matrix ud2)
 {
 	try
 	{
 		solution Xopt;
-		//Tu wpisz kod funkcji
-		int i = 0;
-		double alf = (pow(5, 0.5) - 1) / 2.;
-		matrix alfa (alf);
-		//matrix bb(2, new double[2] {b, 0.});
-		//matrix aa(2, new double[2] {a, 0.});
-		matrix aa(a);
-		matrix bb(b);
-		solution a[2], b[2], c[2], d[2];
-		//matrix tmp(2, new double[2]{ 0,0 });
-		matrix tmp(0);
-		for(int j = 0 ; j < 2; j++){
-			a[j].x = tmp;
-			b[j].x = tmp;
-			c[j].x = tmp;
-			d[j].x = tmp;
+		double alfa = (sqrt(5) - 1) / 2;
+		solution A, B, C, D;
+		A.x = a;
+		B.x = b;
+		C.x = B.x - alfa * (B.x - A.x);
+		C.fit_fun(ff, ud1, ud2);
+		D.x = A.x + alfa * (B.x - A.x);
+		D.fit_fun(ff, ud1, ud2);
+		while (true)
+		{
+			if (C.y < D.y)
+			{
+				B = D;
+				D = C;
+				C.x = B.x - alfa * (B.x - A.x);
+				C.fit_fun(ff, ud1, ud2);
+			}
+			else
+			{
+				A = C;
+				C = D;
+				D.x = A.x + alfa * (B.x - A.x);
+				D.fit_fun(ff, ud1, ud2);
+			}
+			if (B.x - A.x < epsilon)
+			{
+				Xopt.x = (A.x + B.x) / 2.0f;
+				Xopt.fit_fun(ff, ud1, ud2);
+				Xopt.flag = 0;
+				break;
+			}
+			if (solution::f_calls > Nmax)
+			{
+				Xopt.x = (A.x + B.x) / 2;
+				Xopt.fit_fun(ff, ud1, ud2);
+				Xopt.flag = 1;
+				break;
+			}
 		}
-		
-		b[0].x = bb;
-		a[0].x = aa;
-		c[0].x = b[0].x - alfa * (b[0].x - a[0].x);
-		d[0].x = a[0].x + alfa * (b[0].x - a[0].x);
-		a[0].fit_fun(ff, ud1, ud2);
-		b[0].fit_fun(ff, ud1, ud2);
-		c[0].fit_fun(ff, ud1, ud2);
-		d[0].fit_fun(ff, ud1, ud2);
-		do {
-			if(c[0].y < d[0].y) {
-				a[1].x = a[0].x;
-				b[1].x = d[0].x;
-				c[1].x = b[1].x - alfa * (b[1].x - a[1].x);
-				d[1].x = c[0].x;
-
-				a[1].fit_fun(ff, ud1, ud2);
-				b[1].fit_fun(ff, ud1, ud2);
-				c[1].fit_fun(ff, ud1, ud2);
-				d[1].fit_fun(ff, ud1, ud2);
-			}
-			else {
-				a[1].x = c[0].x;
-				b[1].x = b[0].x;
-				c[1].x = d[0].x;
-				d[1].x = a[1].x + alfa * (b[1].x - a[1].x);
-
-				a[1].fit_fun(ff, ud1, ud2);
-				b[1].fit_fun(ff, ud1, ud2);
-				c[1].fit_fun(ff, ud1, ud2);
-				d[1].fit_fun(ff, ud1, ud2);
-			}
-			a[0] = a[1];
-			b[0] = b[1];
-			c[0] = c[1];
-			d[0] = d[1];
-			i++;
-
-			if (solution::f_calls > Nmax) throw("error: przekroczono nmax");
-
-		} while (b[0].y - a[0].y > epsilon);
-		
-		Xopt.x = (a[0].x + b[0].x) / 2;
-		Xopt.fit_fun(ff, ud1, ud2);
 		return Xopt;
 	}
 	catch (string ex_info)
@@ -910,80 +1010,131 @@ solution golden(matrix(*ff)(matrix, matrix, matrix), double a, double b, double 
 	}
 }
 
+//solution Powell(matrix(*ff)(matrix, matrix, matrix), matrix x0, double epsilon, int Nmax, matrix ud1, matrix ud2)
+//{
+//	try
+//	{
+//		solution Xopt;
+//		//Tu wpisz kod funkcji
+//		double vect1[] = { 1,0 };
+//		double vect2[] = { 0,1 };
+//		matrix e1(2, vect1);
+//		matrix e2(2, vect2);
+//		matrix e[2] = { e1,e2 };
+
+//		int n = get_len(x0);
+		
+//		matrix d[2];
+//		matrix d1(n,1);
+//		matrix d2(n, 1);
+//		solution x;
+//		solution p0, p, h[2];
+		
+//		x.x = x0;
+
+//		p0.x = x0;
+//		p = p0;
+//		int i = 0;
+		
+//		matrix P(n, 2);
+//		double* ab;
+	
+//		d1 = e[0];
+//		d2 = e[1];
+//		d[0] = d1;
+//		d[1] = d2;
+//		do{
+//			p0 = x;
+//			for (int j=1; j<=n; j++){
+
+//				P.set_col(p.x, 0);
+//				P.set_col(d[j-1], 1);
+
+//				ab = expansion2(ff, 0, 1, 1.2, Nmax, ud1, P);
+//				h[j-1] = golden(ff, ab[0], ab[1], epsilon, Nmax, ud1, P);
+				
+
+//				p.x = p.x + h[j-1].x * d[j-1];
+//			}
+
+//			if (norm(p.x - x.x) < epsilon) {
+//				//x.fit_fun(ff, ud1, NAN);
+//				x.fit_fun(ff, ud1, ud2);
+//				return Xopt = x; 
+//			}
+
+//			for (int j = 1; j <= n-1; j++) {
+//				d[0] = d[1];
+			
+//			}
+
+//			d[1] = p.x - p0.x;
+	
+//			P.set_col(p.x, 0);
+//			P.set_col(d[1], 1);
+
+//			ab = expansion2(ff, 0, 1, 1.2, Nmax, ud1, P);
+//			h[0] = golden(ff, ab[0], ab[1], epsilon, Nmax, ud1, P);
+
+//			p.x = p.x + h[0].x * d[1];
+
+
+//			x = p;
+
+//			i++;
+//		} while (solution::f_calls < Nmax);
+
+//	}
+//	catch (string ex_info)
+//	{
+//		throw ("solution Powell(...):\n" + ex_info);
+//	}
+//}
+
 solution Powell(matrix(*ff)(matrix, matrix, matrix), matrix x0, double epsilon, int Nmax, matrix ud1, matrix ud2)
 {
 	try
 	{
 		solution Xopt;
 		//Tu wpisz kod funkcji
-		double vect1[] = { 1,0 };
-		double vect2[] = { 0,1 };
-		matrix e1(2, vect1);
-		matrix e2(2, vect2);
-		matrix e[2] = { e1,e2 };
-
 		int n = get_len(x0);
-		
-		matrix d[2];
-		matrix d1(n,1);
-		matrix d2(n, 1);
-		solution x;
-		solution p0, p, h[2];
-		
-		x.x = x0;
-
-		p0.x = x0;
-		p = p0;
-		int i = 0;
-		
-		matrix P(n, 2);
+		matrix D = ident_mat(n), A(n, 2);
+		solution X, P, h;
+		X.x = x0;
 		double* ab;
-	
-		d1 = e[0];
-		d2 = e[1];
-		d[0] = d1;
-		d[1] = d2;
-		do{
-			p0 = x;
-			for (int j=1; j<=n; j++){
-
-				P.set_col(p.x, 0);
-				P.set_col(d[j-1], 1);
-
-				ab = expansion2(ff, 0, 1, 1.2, Nmax, ud1, P);
-				h[j-1] = golden(ff, ab[0], ab[1], epsilon, Nmax, ud1, P);
-				
-
-				p.x = p.x + h[j-1].x * d[j-1];
+		while (true)
+		{
+			P = X;
+			for (int i = 0; i < n; ++i)
+			{
+				A.set_col(P.x, 0);
+				A.set_col(D[i], 1);
+				ab = expansion3(ff, 0, 1, 1.2, Nmax, ud1, A);
+				h = golden(ff, ab[0], ab[1], epsilon, Nmax, ud1, A);
+				P.x = P.x + h.x * D[i];
 			}
-
-			if (norm(p.x - x.x) < epsilon) {
-				//x.fit_fun(ff, ud1, NAN);
-				x.fit_fun(ff, ud1, ud2);
-				return Xopt = x; 
+			if (norm(X.x - P.x) < epsilon) {
+				Xopt = P;
+				Xopt.fit_fun(ff, ud1, ud2);
+				Xopt.flag = 0;
+				break;
 			}
-
-			for (int j = 1; j <= n-1; j++) {
-				d[0] = d[1];
-			
+			if (solution::f_calls > Nmax) {
+				Xopt = P;
+				Xopt.fit_fun(ff, ud1, ud2);
+				Xopt.flag = 1;
+				break;
 			}
-
-			d[1] = p.x - p0.x;
-	
-			P.set_col(p.x, 0);
-			P.set_col(d[1], 1);
-
-			ab = expansion2(ff, 0, 1, 1.2, Nmax, ud1, P);
-			h[0] = golden(ff, ab[0], ab[1], epsilon, Nmax, ud1, P);
-
-			p.x = p.x + h[0].x * d[1];
-
-
-			x = p;
-
-			i++;
-		} while (solution::f_calls < Nmax);
-
+			for (int i = 0; i < n - 1; ++i)
+				D.set_col(D[i + 1], i);
+			D.set_col(P.x - X.x, n - 1);
+			A.set_col(P.x, 0);
+			A.set_col(D[n - 1], 1);
+			ab = expansion3(ff, 0, 1, 1.2, Nmax, ud1, A);
+			h = golden(ff, ab[0], ab[1], epsilon, Nmax, ud1, A);
+			X.x = P.x + h.x * D[n - 1];
+		}
+		return Xopt;
 	}
 	catch (string ex_info)
 	{
@@ -993,85 +1144,85 @@ solution Powell(matrix(*ff)(matrix, matrix, matrix), matrix x0, double epsilon, 
 
 solution EA(matrix(*ff)(matrix, matrix, matrix), int N, matrix limits, int mi, int lambda, matrix sigma0, double epsilon, int Nmax, matrix ud1, matrix ud2)
 {
-	//try
-	//{
+	try
+	{
 		solution Xopt;
-	//	//Tu wpisz kod funkcji
-	//	solution* P = new solution[mi + lambda];
-	//	solution* Pm = new solution[mi];
-	//	matrix IFF(mi, 1);
+		////Tu wpisz kod funkcji
+		//solution* P = new solution[mi + lambda];
+		//solution* Pm = new solution[mi];
+		//matrix IFF(mi, 1);
 
-	//	for (int i = 0; i < mi; i++) {
-	//		P[i].x = matrix(N, 2);
-	//		for (int j = 0; j < N; j++) {
-	//			P[i].x(j, 0) = (limits(j, 1) - limits(j, 0)) * m2d(rand_mat()) + limits(j, 0);
-	//			P[i].x(j, 1) = sigma0(j);
-	//		}
-	//		if (P[i].fit_fun(ff, ud1, ud2) < epsilon) {
-	//			Xopt = P[i];
-	//			//delete macierz P i Pm
-	//			return Xopt;
-	//		}
-	//	}
+		//for (int i = 0; i < mi; i++) {
+		//	P[i].x = matrix(N, 2);
+		//	for (int j = 0; j < N; j++) {
+		//		P[i].x(j, 0) = (limits(j, 1) - limits(j, 0)) * m2d(rand_mat()) + limits(j, 0);
+		//		P[i].x(j, 1) = sigma0(j);
+		//	}
+		//	if (P[i].fit_fun(ff, ud1, ud2) < epsilon) {
+		//		Xopt = P[i];
+		//		//delete macierz P i Pm
+		//		return Xopt;
+		//	}
+		//}
 
-	//	while (true) {
-	//		double S_IFF = 0.;
+		//while (true) {
+		//	double S_IFF = 0.;
 
-	//		for (int i = 0; i < mi; i++) {
-	//			IFF(i) = 1 / m2d(P[i].y);
-	//			S_IFF += IFF(i);
-	//		}
+		//	for (int i = 0; i < mi; i++) {
+		//		IFF(i) = 1 / m2d(P[i].y);
+		//		S_IFF += IFF(i);
+		//	}
 
-	//		for (int i = 0; i < lambda; i++) {
-	//			double r = m2d(rand_mat());
-	//			double s = 0.;
+		//	for (int i = 0; i < lambda; i++) {
+		//		double r = m2d(rand_mat());
+		//		double s = 0.;
 
-	//			for (int j = 0; j < mi; j++) {
-	//				s += IFF(j);
-	//				if (r <= s) {
-	//					P[mi + i] = P[j];
-	//					break;
-	//				}
-	//			}
-	//		}
+		//		for (int j = 0; j < mi; j++) {
+		//			s += IFF(j);
+		//			if (r <= s) {
+		//				P[mi + i] = P[j];
+		//				break;
+		//			}
+		//		}
+		//	}
 
-	//		//mutacja
-	//		for (int i = 0; i < lambda; i++) {
-	//			double alfa, beta, r; //alfa i beta wzory od N zalezne na tablicy byly
-	//			//alfa = ;
-	//			//beta = ;
-	//			r = m2d(randn_mat());
-	//			for (int j = 0; j < N; j++) {
-	//				P[mi + i].x(j, 1) *= exp(alfa * r + beta * m2d(randn_mat()));
-	//				P[mi + i].x(j, 0) += P[mi + i].x(j, 1) * m2d(randn_mat());
-	//			}
-	//		}
+		//	//mutacja
+		//	for (int i = 0; i < lambda; i++) {
+		//		double alfa, beta, r; //alfa i beta wzory od N zalezne na tablicy byly
+		//		alfa = ;
+		//		beta = ;
+		//		r = m2d(randn_mat());
+		//		for (int j = 0; j < N; j++) {
+		//			P[mi + i].x(j, 1) *= exp(alfa * r + beta * m2d(randn_mat()));
+		//			P[mi + i].x(j, 0) += P[mi + i].x(j, 1) * m2d(randn_mat());
+		//		}
+		//	}
 
-	//		//krzyzowanie
-	//		for (int i = 0; i < lambda; i += 2) {
-	//			double r = m2d(rand_mat()); // waga
-	//			matrix tmp = P[mi + i].x;
-	//			P[mi + i].x = r * P[mi + i].x + (1 - r) * P[mi + i + 1].x;
-	//			P[mi + i + 1].x = r * P[mi + i + 1].x + (1 - r) * P[mi + i].x;
-	//		}
+		//	//krzyzowanie
+		//	for (int i = 0; i < lambda; i += 2) {
+		//		double r = m2d(rand_mat()); // waga
+		//		matrix tmp = P[mi + i].x;
+		//		P[mi + i].x = r * P[mi + i].x + (1 - r) * P[mi + i + 1].x;
+		//		P[mi + i + 1].x = r * P[mi + i + 1].x + (1 - r) * P[mi + i].x;
+		//	}
 
-	//		//warunek stopu
-	//		for (int i = 0; i < lambda; i++) {
-	//			if (P[mi + i].fit_fun(ff, ud1, ud2) < epsilon) {
-	//				Xopt = P[i];
-	//				//delete macierz P i Pm
-	//				return Xopt;
-	//			}
-	//		}
+		//	//warunek stopu
+		//	for (int i = 0; i < lambda; i++) {
+		//		if (P[mi + i].fit_fun(ff, ud1, ud2) < epsilon) {
+		//			Xopt = P[i];
+		//			//delete macierz P i Pm
+		//			return Xopt;
+		//		}
+		//	}
 
-	//		//wybieranie mi najlepiej przystosowanych osobnikow 
-	//		//chyba mamy sami wymyslic?
-	//	}
+		//	//wybieranie mi najlepiej przystosowanych osobnikow 
+		//	//chyba mamy sami wymyslic?
+		//}
 
 		return Xopt;
-	//}
-	//catch (string ex_info)
-	//{
-	//	throw ("solution EA(...):\n" + ex_info);
-	//}
+	}
+	catch (string ex_info)
+	{
+		throw ("solution EA(...):\n" + ex_info);
+	}
 }

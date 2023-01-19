@@ -31,6 +31,7 @@ int main()
 		//lab3();
 		//lab4();
 		lab5();
+		//lab6();
 	}
 	catch (string ex_info)
 	{
@@ -269,52 +270,70 @@ void lab4()
 void lab5()
 {
 	//funkcja testowa:
-	ofstream out("wynikiTestoweLab5.txt");
+	//ofstream out("wynikiTestoweLab5.txt");
+	//solution naszSolution;
+	//double a = 10;
+	//double waga = 0.0;
+	//matrix ud1(2, new double[2] {waga, a});
+	//for (int i = 0; i < 101; i++) {
+	//	double x1, x2;
+	//	x1 = (20. * ((double)rand() / (double)RAND_MAX)) - 10.; //od -10 do 10
+	//	x2 = (20. * ((double)rand() / (double)RAND_MAX)) - 10.;
+	//	double pom[2] = { x1,x2 };
+	//	matrix x0(2, pom);
+	//	ud1(1) = 1.;
+	//	naszSolution = Powell(f5, x0, 0.001, 1000, ud1);
+	//	cout <<  x1 << " " << x2 << " " << naszSolution.x(0) << " " << naszSolution.x(1) << " " << naszSolution.y(0) << " " << naszSolution.y(1) << " " << solution::f_calls << " ";
+	//	solution::clear_calls();
+	//	ud1(1) = 10.;
+	//	naszSolution = Powell(f5, x0, 0.001, 1000, ud1);
+	//	cout << naszSolution.x(0) << " " << naszSolution.x(1) << " " << naszSolution.y(0) << " " << naszSolution.y(1) << " " << solution::f_calls << " ";
+	//	solution::clear_calls();
+
+	//	ud1(1) = 100.;
+	//	naszSolution = Powell(f5, x0, 0.001, 1000, ud1);
+	//	cout << naszSolution.x(0) << " " << naszSolution.x(1) << " " << naszSolution.y(0) << " " << naszSolution.y(1) << " " << solution::f_calls << endl;
+	//	solution::clear_calls();
+
+	//	ud1(0) += 0.01;
+	//}
+
+
+	//problem rzeczywisty:
+	ofstream out("wynikiRzeczywisteLab5.txt");
 	solution naszSolution;
-	double a = 10;
 	double waga = 0.0;
-	matrix ud1(2, new double[2] {waga, a});
+	matrix ud1(2,1);
 	for (int i = 0; i < 101; i++) {
-		double x1, x2;
-		x1 = (20. * ((double)rand() / (double)RAND_MAX)) - 10.; //od -10 do 10
-		x2 = (20. * ((double)rand() / (double)RAND_MAX)) - 10.;
-		double pom[2] = { x1,x2 };
-		matrix x0(2, pom);
-		ud1(1) = 1.;
-		naszSolution = Powell(f5, x0, 0.001, 1000, ud1);
-		cout <<  x1 << " " << x2 << " " << naszSolution.x(0) << " " << naszSolution.x(1) << " " << naszSolution.y(0) << " " << naszSolution.y(1) << " " << solution::f_calls << " ";
-		solution::clear_calls();
-		ud1(1) = 10.;
-		naszSolution = Powell(f5, x0, 0.001, 1000, ud1);
-		cout << naszSolution.x(0) << " " << naszSolution.x(1) << " " << naszSolution.y(0) << " " << naszSolution.y(1) << " " << solution::f_calls << " ";
-		solution::clear_calls();
-
-		ud1(1) = 100.;
-		naszSolution = Powell(f5, x0, 0.001, 1000, ud1);
-		cout << naszSolution.x(0) << " " << naszSolution.x(1) << " " << naszSolution.y(0) << " " << naszSolution.y(1) << " " << solution::f_calls << endl;
-		solution::clear_calls();
-
-		ud1(0) += 0.01;
-	}
-
-	////problem rzeczywisty:
-	/*ofstream out("wynikiRzeczywisteLab5.txt");
-	solution naszSolution;
-	double waga = 0.0;
-	matrix ud1(waga);
-	for (int i = 0; i < 101; i++) {
+		matrix x0(2, 1);
+		ud1 = matrix(1, 1, waga);
 		double l, d;
 		l = (900. * ((double)rand() / (double)RAND_MAX)) + 100.;
-		d = (40. * ((double)rand() / (double)RAND_MAX)) - 10.;
-		double pom[2] = { l,d };
-		matrix x0(2, pom);
+		d = (40. * ((double)rand() / (double)RAND_MAX)) + 10.;
+		x0(0) = l;
+		x0(1) = d;
 		naszSolution = Powell(ff5R, x0, 0.001, 1000, ud1, 0);
 		cout << l << " " << d << " " << naszSolution.x(0) << " " << naszSolution.x(1) << " " << naszSolution.y(0) << " " << naszSolution.y(1) << " " << " " << solution::f_calls << endl;
 		solution::clear_calls();
-		
-		ud1(0) += 0.01;
-	}*/
+		waga += 0.01;
+	}
 
+	//matrix x0(2, 1), ud(2, 1);
+	//double epsilon = 1e-3, w;
+	//solution opt;
+	//for (double i = 0; i <= 1.01; i += 0.01)
+	//{
+	//	x0(0) = 0.8 * m2d(rand_mat()) + 0.2;
+	//	x0(1) = 0.04 * m2d(rand_mat()) + 0.01;
+	//	w = i;
+	//	//cout << w << endl;
+	//	ud = matrix(1, 1, w);
+	//	opt = Powell(ff5R, x0, epsilon, 5000, ud);
+	//	cout << 1000 * x0(0) << ";" << 1000 * x0(1) << ";" << 1000
+	//	* opt.x(0) << ";" << 1000 * opt.x(1) << ";" << opt.y(0) << " " << ";" <<
+	//	1000 * opt.y(1) << ";" << opt.f_calls << "\n";
+	//	solution::clear_calls();
+	//}
 }
 
 void lab6()

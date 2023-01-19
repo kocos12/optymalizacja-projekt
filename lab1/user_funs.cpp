@@ -329,24 +329,25 @@ matrix gfR1(matrix x, matrix ud1, matrix ud2) {
 
 
 matrix f51(double a, matrix x, matrix ud1, matrix ud2){
-	return (a * (pow(x(0) - 2), 2) + (pow(x(1) - 2), 2));
+	return (a * (pow(x(0) - 2., 2) + (pow(x(1) - 2., 2))));
 }
 matrix f52(double a, matrix x, matrix ud1, matrix ud2){
-	return ((1 / a) * (pow(x(0) + 2), 2) + (pow(x(1) + 2), 2));
+	return ((1. / a) * (pow(x(0) + 2., 2) + (pow(x(1) + 2., 2))));
 }
 
 matrix f5(matrix x, matrix ud1, matrix ud2){
 	if (isnan(ud2(0, 0))) {
 		matrix y;
 		y = matrix(2, new double[2] {0., 0.});
-		y(0) = ud1(1) * (pow(x(0) - 2, 2) + (pow(x(1) - 2, 2))); 
-		y(1) = (1 / ud1(1)) * (pow(x(0) + 2, 2) + (pow(x(1) + 2, 2)));
+		y(0) = ud1(1) * (pow(x(0) - 2., 2) + (pow(x(1) - 2., 2))); 
+		y(1) = (1. / ud1(1)) * (pow(x(0) + 2., 2) + (pow(x(1) + 2., 2)));
 		return y;
 	}
 	else {
-		return ud1(0) * f51(ud1(1), ud2[0]+x*ud2[1], ud1) + (1 - ud1(0)) * f52(ud1(1), ud2[0] + x * ud2[1], ud1);
+		return ud1(0) * f51(ud1(1), ud2[0]+x*ud2[1], ud1) + (1. - ud1(0)) * f52(ud1(1), ud2[0] + x * ud2[1], ud1);
 	}
 }
+
 
 matrix ff5R(matrix x, matrix ud1, matrix ud2){
 	matrix y;
@@ -370,7 +371,8 @@ matrix ff5R(matrix x, matrix ud1, matrix ud2){
 		matrix yt;
 		matrix xt = ud2[0] + x * ud2[1];
 		yt = ff5R(xt, ud1, NAN);
-		y = ud1 * (yt(0) - 0.06) / (1.53 - 0.06) + (1 - ud1) * (yt(1) - 5.25e-6) / (0.0032 - 5.25e-6);
+		y = ud1 * (yt(0) - 0.12) / (3.06 - 0.12) + (1 - ud1) * (yt(1) - 4.2e-5) / (0.026 - 4.2e-5);
+
 		double c = 1e10;
 		if (xt(0) < 0.1) y = y + c * (pow(0.1 - xt(0), 2));
 		if (xt(0) > 1) y = y + c * (pow(xt(0) - 1, 2));
