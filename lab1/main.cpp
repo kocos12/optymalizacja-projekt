@@ -30,8 +30,8 @@ int main()
 		//lab2();
 		//lab3();
 		//lab4();
-		lab5();
-		//lab6();
+		//lab5();
+		lab6();
 	}
 	catch (string ex_info)
 	{
@@ -308,35 +308,42 @@ void lab5()
 		matrix x0(2, 1);
 		ud1 = matrix(1, 1, waga);
 		double l, d;
-		l = (900. * ((double)rand() / (double)RAND_MAX)) + 100.;
-		d = (40. * ((double)rand() / (double)RAND_MAX)) + 10.;
+		l = (0.9 * ((double)rand() / (double)RAND_MAX)) + 0.1;
+		d = (0.04 * ((double)rand() / (double)RAND_MAX)) + 0.01;
 		x0(0) = l;
 		x0(1) = d;
-		naszSolution = Powell(ff5R, x0, 0.001, 1000, ud1, 0);
-		cout << l << " " << d << " " << naszSolution.x(0) << " " << naszSolution.x(1) << " " << naszSolution.y(0) << " " << naszSolution.y(1) << " " << " " << solution::f_calls << endl;
+		naszSolution = Powell(ff5R, x0, 0.001, 1000, ud1);
+		cout << 1000 * x0(0) << " " << x0(1) * 1000 << " " << naszSolution.x(0) * 1000 << " " << 1000 * naszSolution.x(1) << " " << naszSolution.y(0) << " " << 1000 * naszSolution.y(1) << " " << " " << solution::f_calls << endl;
 		solution::clear_calls();
 		waga += 0.01;
 	}
-
-	//matrix x0(2, 1), ud(2, 1);
-	//double epsilon = 1e-3, w;
-	//solution opt;
-	//for (double i = 0; i <= 1.01; i += 0.01)
-	//{
-	//	x0(0) = 0.8 * m2d(rand_mat()) + 0.2;
-	//	x0(1) = 0.04 * m2d(rand_mat()) + 0.01;
-	//	w = i;
-	//	//cout << w << endl;
-	//	ud = matrix(1, 1, w);
-	//	opt = Powell(ff5R, x0, epsilon, 5000, ud);
-	//	cout << 1000 * x0(0) << ";" << 1000 * x0(1) << ";" << 1000
-	//	* opt.x(0) << ";" << 1000 * opt.x(1) << ";" << opt.y(0) << " " << ";" <<
-	//	1000 * opt.y(1) << ";" << opt.f_calls << "\n";
-	//	solution::clear_calls();
-	//}
 }
 
 void lab6()
 {
+	matrix sigma0 = matrix(2,1);
+	int mi = 80;
+	int N = 2, Nmax = 1000;
+	int lambda = 80;
+	double epsilon = 1e-1;
+	solution EH;
+	matrix limits = matrix(2,2);
+	limits(0,0) = -5.;
+	limits(0,1) = 5.;
+	limits(1,0) = -5.;
+	limits(1,1) = 5.;
+	for (int i = 0; i < 100; i++) {
+		
+		sigma0(0) = 0.01;
+		sigma0(1) = 0.01;
+
+		EH = EA(f2, N, limits, mi, lambda, sigma0, epsilon, Nmax);
+		//cout << x0(0) << " " << x0(1) << " " << EH.x(0) * 1000 << " " << EH.x(1) << " " << EH.y(0) << " " << EH.y(1) << " " << " " << solution::f_calls << endl;
+		solution::clear_calls();
+
+		////solution EA(matrix(*ff)(matrix, matrix, matrix), int N, matrix limits, int mi, int lambda, matrix sigma0, double epsilon, int Nmax, matrix ud1, matrix ud2)
+		
+	}
+	
 	//funkcja testowa jakas taka jak w lab2 bylo chyba
 }
