@@ -27,11 +27,11 @@ int main()
 	try
 	{
 		//lab1();
-		//lab2();
+		lab2();
 		//lab3();
 		//lab4();
 		//lab5();
-		lab6();
+		//lab6();
 	}
 	catch (string ex_info)
 	{
@@ -132,7 +132,7 @@ void lab2()
 
 	//	double pom[] = { x1[i],x2[i] };
 	//	matrix x0(2, pom);
-	//	solution optHJ = HJ(f2, x0, krok, 0.5, 1e-3, 1000, 0, 0);
+	//	solution optHJ = HJ(f2, x0, krok, 0.5, 1e-3, 1000, 0, 0);	solution optHJ = HJ(f2, x0, krok, 0.5, 1e-3, 1000, 0, 0);
 	//	//cout << "wyniki:\nx1 = " << optHJ.x(0) << "\tx2 = " << optHJ.x(1) << "\ty = " << optHJ.y << endl << "f_calls = " << optHJ.f_calls << "\texit flag = " << optHJ.flag << endl;
 	//	//cout << pom[0] << " " << pom[1] << " " << optHJ.x(0) << " " << optHJ.x(1) << " " << optHJ.y << " " << optHJ.f_calls << endl;
 	//	solution::f_calls = 0;
@@ -151,6 +151,16 @@ void lab2()
 	//matrix x(2, new double[2]{ 3.8457,4.83594 });
 	//matrix wynik = fR_lab2(x, 0, 0);
 	//cout << wynik << endl;
+
+	//solution Rosen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix s0, double alpha, double beta, double epsilon, int Nmax, matrix ud1, matrix ud2)
+	double pom[] = { 0,0.5 };
+	//matrix krok(2,2,0.5);
+	matrix krok(2, 1);
+	krok(0) = 0.5;
+	krok(1) = 0.5;
+	matrix x0(2, pom);
+	solution optRosen = Rosen(f2, x0, krok, 1.5, 0.5, 1e-3, 1000, NAN, NAN);
+	cout << "wyniki:\nx1 = " << optRosen.x(0) << "\tx2 = " << optRosen.x(1) << "\ty = " << optRosen.y << "\tf_calls = " << optRosen.f_calls << endl;
 }
 
 void lab3()

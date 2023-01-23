@@ -425,76 +425,95 @@ solution Rosen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix s0, double
 {
 	try
 	{
-		solution Xopt;
-		int n = 2;
-		int i = 0;
-		double vect1[] = { 1,0 };
-		double vect2[] = { 0,1 };
-
-		matrix mvect1(2, vect1);
-		matrix mvect2(2, vect2);
+		solution Xopt, XB(x0);
+		solution tmp;
+		int n = get_dim(XB);
+		//std::cout << "n = " << n << std::endl;
+		//int n = get_len(x0);
 	
-		matrix s = s0;
-		matrix d[] = { mvect1,mvect2 };
-		matrix lambda[] = { 0,0 };
-		matrix p[] = { 0,0 };
-		matrix xB = x0;
+		matrix s(s0);
+		matrix d = ident_mat(n);
+
+		matrix lambda(n, 1);
+		matrix p(n, 1);
+		for (int i = 0; i < n; i++) {
+			lambda(i) = 0.;
+			p(i) = 0.;
+		}
+
+		bool czyZmianaBazy = false;
+		double maxS;
 		//tu wpisz kod funkcji
+
 		do {
 			bool zmianaBazyKierunkow = false;
-			int j;
-			for (j = 0; j < n; j++) {
-				if(ff(xB +(s * d[j]), 0, 0) < ff(xB, 0, 0)) {
-					xB = xB + (s * d[j]);
-					lambda[j] = lambda[j] + s;
-					s = s * alpha;
+			
+			for (int i = 0; i < n; i++)  {
+				
+				tmp.x = XB.x + s(i) * d[i];
+				tmp.fit_fun(ff, ud1, ud2);
+				XB.fit_fun(ff, ud1, ud2);
+				if (tmp.y < XB.y) {
+					XB.x = XB.x + s(i) * d[i];
+					lambda(i) = lambda(i) + s(i);
+					s(i) = alpha * s(i);
 				}
 				else {
-					s = -beta * s;
-					p[j] = p[j] + 1;
+					s(i) = -beta * s(i);
+					p(i) = p(i) + 1;
 				}
-				if (lambda[j] != 0 && p[j] != 0) zmianaBazyKierunkow = true;
-				else zmianaBazyKierunkow = false;
 			}
 
-			if(zmianaBazyKierunkow) {
-				//zmiana bazy kierunkow
-				double q1[] = { m2d(lambda[0]), m2d(lambda[1]) };
-				double q2[] = { 0.0, m2d(lambda[1]) };
-				matrix mq1(2, q1);
-				matrix mq2(2, q2);
-				matrix Q[] = { mq1,mq2 };
-				Q[0] = Q[0] * d[0];
-				Q[1] = Q[1] * d[1];
-				matrix v[] = { Q[0], Q[1] };
-				matrix vnorm;
-				matrix suma = 0;
-
-				matrix qtranstemp = trans(Q[1]);
-				suma = suma + qtranstemp * d[1];
-	
-				suma = suma * d[1];
-				v[1] = suma;
-				for (j = 0; j < n; j++){
-					vnorm[j] = sqrt(m2d(v[j][0] * v[j][0] + v[j][1] * v[j][1]));
-					d[j] = v[j]/vnorm[j];
-
+			czyZmianaBazy = true;
+			for (int i = 0; i < n; i++) {
+				if (lambda(i) == 0 || p(i) == 0) {
+					czyZmianaBazy = false;
+					break;
 				}
-				lambda[j] = 0;
-				p[j] = 0;
-				s = s0;
-			}
-			i++;	
-
-			if(solution::f_calls > Nmax) {
-				break;
 			}
 
-		} while ( i < Nmax);
-		return Xopt;
+			if (czyZmianaBazy) {
+				matrix Q(n, n);
+				matrix v(n, 1);
+
+				for (int i = 0; i < n; i++) {
+					for (int j = 0; j <= i; j++) {
+						Q(i, j) = lambda(i);
+					}
+				}
+				Q = d * Q;
+				v = Q[0] / norm(Q[0]);
+				d.set_col(v, 0);
+
+				for (int i = 1; i < n; i++) {
+					matrix tmp(n, 1);
+					for (int j = 0; j < i; j++) {
+						tmp = tmp + trans(Q[i]) * d[j] * d[j];
+					}
+					v = (Q[i] - tmp) / norm(Q[i] - tmp);
+					d.set_col(v, i);
+				}
+
+				lambda = matrix(n, 1);
+				p = matrix(n, 1);
+				s = matrix(s0);
+			}
+
+			maxS = abs(s(0));
+			for (int i = 1; i < n; i++) {
+				if (maxS < abs(s(i))) maxS = abs(s(i));
+			}
+
+			if(solution::f_calls > Nmax || maxS < epsilon) {
+				Xopt = XB;
+				Xopt.fit_fun(ff, ud1, ud2);
+				return Xopt;
+			}
+
+		} while (true);
+		
 	}
-	catch (string ex_info)
-	{
+	catch (string ex_info){
 		throw ("solution Rosen(...):\n" + ex_info);
 	}
 }
