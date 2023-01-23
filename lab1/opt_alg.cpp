@@ -428,8 +428,6 @@ solution Rosen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix s0, double
 		solution Xopt, XB(x0);
 		solution tmp;
 		int n = get_dim(XB);
-		//std::cout << "n = " << n << std::endl;
-		//int n = get_len(x0);
 	
 		matrix s(s0);
 		matrix d = ident_mat(n);
@@ -443,18 +441,17 @@ solution Rosen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix s0, double
 
 		bool czyZmianaBazy = false;
 		double maxS;
-		//tu wpisz kod funkcji
 
+		//tu wpisz kod funkcji
+		int iteracja = 0;
+		XB.fit_fun(ff, ud1, ud2);
 		do {
-			bool zmianaBazyKierunkow = false;
-			
 			for (int i = 0; i < n; i++)  {
 				
 				tmp.x = XB.x + s(i) * d[i];
 				tmp.fit_fun(ff, ud1, ud2);
-				XB.fit_fun(ff, ud1, ud2);
 				if (tmp.y < XB.y) {
-					XB.x = XB.x + s(i) * d[i];
+					XB = tmp;
 					lambda(i) = lambda(i) + s(i);
 					s(i) = alpha * s(i);
 				}
@@ -504,12 +501,14 @@ solution Rosen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix s0, double
 				if (maxS < abs(s(i))) maxS = abs(s(i));
 			}
 
+			//std::cout << XB.x(0) << " " << XB.x(1) << endl;
+
 			if(solution::f_calls > Nmax || maxS < epsilon) {
 				Xopt = XB;
 				Xopt.fit_fun(ff, ud1, ud2);
 				return Xopt;
 			}
-
+			
 		} while (true);
 		
 	}

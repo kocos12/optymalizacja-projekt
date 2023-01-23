@@ -83,7 +83,7 @@ matrix fR_lab2(matrix x, matrix ud1, matrix ud2) {
 	matrix Y0(2, 1), Y_ref(2, new double[2]{ 3.14,0 });
 	matrix* Y = solve_ode(df_lab2, 0, 0.1, 100, Y0, Y_ref, x); 
 	int n = get_len(Y[0]);
-	cout << "n = " << n << endl;
+	//cout << "n = " << n << endl;
 	y = 0;
 	double t = 0.0;
 	for (int i = 0; i < n; i++) {

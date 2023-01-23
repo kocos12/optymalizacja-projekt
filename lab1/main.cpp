@@ -151,16 +151,59 @@ void lab2()
 	//matrix x(2, new double[2]{ 3.8457,4.83594 });
 	//matrix wynik = fR_lab2(x, 0, 0);
 	//cout << wynik << endl;
+	
 
-	//solution Rosen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix s0, double alpha, double beta, double epsilon, int Nmax, matrix ud1, matrix ud2)
-	double pom[] = { 0,0.5 };
-	//matrix krok(2,2,0.5);
-	matrix krok(2, 1);
-	krok(0) = 0.5;
-	krok(1) = 0.5;
-	matrix x0(2, pom);
-	solution optRosen = Rosen(f2, x0, krok, 1.5, 0.5, 1e-3, 1000, NAN, NAN);
-	cout << "wyniki:\nx1 = " << optRosen.x(0) << "\tx2 = " << optRosen.x(1) << "\ty = " << optRosen.y << "\tf_calls = " << optRosen.f_calls << endl;
+	////ROSEN:
+
+	//double x1[300], x2[300];
+	//ifstream in("rosen.txt");
+	//if (!in.good()) exit(69);
+	//for (int i = 0; i < 300; i++) {
+	//	in >> x1[i];
+	//	in >> x2[i];
+	//}
+	//in.close();
+
+	////tabela 1
+	//matrix krok(2, 1);
+	//for (int i = 0; i < 300; i++) {
+	//	if (i >= 0 && i < 100) {
+	//		krok(0) = 0.5;
+	//		krok(1) = 0.5;
+	//	}
+	//	else if (i >= 100 && i < 200) {
+	//		krok(0) = 0.25;
+	//		krok(1) = 0.25;
+	//	}
+	//	else {
+	//		krok(0) = 0.75;
+	//		krok(1) = 0.75;
+	//	}
+		
+	//	matrix x0(2, new double[2] {x1[i], x2[i]});
+	//	solution optRosen = Rosen(f2, x0, krok, 2, 0.5, 1e-3, 1000, NAN, NAN);
+	//	cout << optRosen.x(0) << " " << optRosen.x(1) << " " << optRosen.y(0) << " " << optRosen.f_calls << endl;
+	//	solution::clear_calls();
+	//}
+
+	////arkusz wykres
+	//matrix krok(2, 1);
+	//matrix x0(2, new double[2] {x1[0], x2[0]});
+	//krok(0) = 0.5;
+	//krok(1) = 0.5;
+	//solution optRosen = Rosen(f2, x0, krok, 2, 0.5, 1e-3, 1000, NAN, NAN);
+
+	////funkcja rzeczywista:
+	//matrix krok(2, 1);
+	//krok(0) = 0.5;
+	//krok(1) = 0.5;
+	//matrix x0(2, new double[2] {3., 5.});
+	//solution wynik = Rosen(fR_lab2, x0, krok, 2, 0.5, 1e-3, 1000, NAN, NAN);
+	//std::cout << wynik.x(0) << " " << wynik.x(1) << " " << wynik.y(0) << " " << wynik.f_calls << endl;
+	//solution::clear_calls();
+
+	fR_lab2(matrix(2,new double[2]{3.50611,4.76441}), NAN, NAN);
+
 }
 
 void lab3()
